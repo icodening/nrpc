@@ -15,6 +15,7 @@ public abstract class AbstractRegistryFactory implements RegistryFactory {
     private static final Map<String, Registry> REGISTRY_SERVICE_MAP = new HashMap<>();
 
     @Override
+    @PrintTime
     public Registry getRegistry(URL url) {
         //先通过缓存获取
         String key = getRegistryServiceCacheKey(url);
