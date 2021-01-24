@@ -1,6 +1,7 @@
 package cn.icodening.rpc.plugin;
 
 import cn.icodening.rpc.core.Initializer;
+import cn.icodening.rpc.core.extension.Extension;
 import cn.icodening.rpc.core.extension.Scope;
 import cn.icodening.rpc.plugin.time.PrintTime;
 
@@ -19,8 +20,7 @@ public class TestPluginImpl implements TestPluginExtension, Initializer {
     }
 
     @Override
-    @PrintTime(printMethodName = false)
-//    @ExceptionHandler
+    @PrintTime
     public void handlerString(String string) {
         int random = new Random().nextInt(500);
         try {
@@ -28,14 +28,7 @@ public class TestPluginImpl implements TestPluginExtension, Initializer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println();
         System.out.println(Thread.currentThread().getName() + ", " + string);
-//        if (random % 2 == 0) {
-//            Object n = null;
-//            System.out.println(n.toString());
-//        }
-//        System.out.println(1 / 0);
-
     }
 
     @Override

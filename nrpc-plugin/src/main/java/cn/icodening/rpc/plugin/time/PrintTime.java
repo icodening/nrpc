@@ -15,5 +15,4 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface PrintTime {
 
-    boolean printMethodName() default true;
 }
