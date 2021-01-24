@@ -78,12 +78,7 @@ public class NacosRegistryTest {
     }
 
     @Test
-    public void testSubscribe() {
-    }
-
-    @Test
     public void unsubscribe() throws CloneNotSupportedException, InterruptedException {
-//        subscribe();
         RegistryFactory factory = ExtensionLoader.getExtensionLoader(RegistryFactory.class).getExtension();
         Registry nacosRegistry = factory.getRegistry(new URL("http", "127.0.0.1", 8848));
         URL testURL = createTestURL("127.0.0.1", 9090);
