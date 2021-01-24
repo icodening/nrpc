@@ -1,0 +1,1 @@
+bootTest=cn.icodening.rpc.plugin.BootTestImpl

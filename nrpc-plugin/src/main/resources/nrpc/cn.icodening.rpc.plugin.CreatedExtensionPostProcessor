@@ -1,0 +1,3 @@
+initializer=cn.icodening.rpc.plugin.init.InitializerExtensionPostProcessor
+smartDestroy=cn.icodening.rpc.plugin.boot.SmartDestroyBootAdvisor
+extensionProxyCreator=cn.icodening.rpc.plugin.ExtensionProxyCreator

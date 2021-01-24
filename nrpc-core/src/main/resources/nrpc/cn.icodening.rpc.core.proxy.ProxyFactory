@@ -1,0 +1,2 @@
+#jdk=cn.icodening.rpc.core.proxy.JDKProxyFactory
+#cglib=cn.icodening.rpc.core.proxy.CGlibProxyFactory

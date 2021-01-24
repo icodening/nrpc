@@ -1,0 +1,2 @@
+singleton=cn.icodening.rpc.core.extension.Singleton
+prototype=cn.icodening.rpc.core.extension.Prototype
