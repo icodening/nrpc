@@ -5,7 +5,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
 /**
- * 方法前置增强拦截器
+ * 方法返回后置拦截器
  *
  * @author icodening
  * @date 2021.01.07
