@@ -1,8 +1,8 @@
 package cn.icodening.rpc.registry.nacos;
 
+import cn.icodening.rpc.core.Initializer;
 import cn.icodening.rpc.core.URL;
 import cn.icodening.rpc.core.util.ReflectUtil;
-import cn.icodening.rpc.plugin.time.PrintTime;
 import cn.icodening.rpc.registry.AbstractRegistryFactory;
 import cn.icodening.rpc.registry.Registry;
 import com.alibaba.nacos.api.NacosFactory;
@@ -23,14 +23,13 @@ import static java.lang.reflect.Modifier.*;
  * @author icodening
  * @date 2020.12.29
  */
-public class NacosRegistryFactory extends AbstractRegistryFactory {
+public class NacosRegistryFactory extends AbstractRegistryFactory implements Initializer {
+
+    private Set<String> propertiesKeys;
 
     @Override
-    protected Registry createRegistryService(URL url) {
-        Properties properties = new Properties();
-        String serverAddress = url.getHost() + ":" + url.getPort();
-        properties.put(SERVER_ADDR, serverAddress);
-        Set<String> collect = Stream.of(PropertyKeyConst.class.getFields())
+    public void initialize() {
+        propertiesKeys = Stream.of(PropertyKeyConst.class.getFields())
                 .filter(f -> isStatic(f.getModifiers())
                         && isPublic(f.getModifiers())
                         && isFinal(f.getModifiers())
@@ -38,7 +37,14 @@ public class NacosRegistryFactory extends AbstractRegistryFactory {
                 .map(f -> ReflectUtil.getFieldValue(null, f))
                 .map(String.class::cast)
                 .collect(Collectors.toSet());
-        Map<String, String> parameters = url.getParameters(collect);
+    }
+
+    @Override
+    protected Registry createRegistryService(URL url) {
+        Properties properties = new Properties();
+        String serverAddress = url.getHost() + ":" + url.getPort();
+        properties.put(SERVER_ADDR, serverAddress);
+        Map<String, String> parameters = url.getParameters(propertiesKeys);
         properties.putAll(parameters);
         NamingService namingService = null;
         try {
