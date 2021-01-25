@@ -9,7 +9,6 @@ import cn.icodening.rpc.plugin.time.PrintTime;
  */
 public class BootTestImpl extends AbstractBootAdapter {
 
-    //FIXME 入口方法 start() 没有注解而子类有增强注解，最终不会被增强。类似Spring事务失效
     @Override
     @PrintTime
     protected void doStart() {

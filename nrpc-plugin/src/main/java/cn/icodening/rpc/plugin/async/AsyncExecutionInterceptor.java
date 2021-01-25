@@ -1,12 +1,16 @@
 package cn.icodening.rpc.plugin.async;
 
 import cn.icodening.rpc.aop.EmptyAnnotation;
+import cn.icodening.rpc.aop.util.AopUtil;
+import cn.icodening.rpc.core.NrpcException;
 import cn.icodening.rpc.core.extension.ExtensionLoader;
 import cn.icodening.rpc.core.util.DefaultThreadPoolFactory;
+import cn.icodening.rpc.core.util.ExceptionI18nUtil;
 import cn.icodening.rpc.core.util.ReflectUtil;
 import cn.icodening.rpc.core.util.StringUtil;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.apache.log4j.Logger;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -21,6 +25,8 @@ import java.util.concurrent.ExecutorService;
  * @date 2021.01.23
  */
 public class AsyncExecutionInterceptor implements MethodInterceptor {
+
+    private static final Logger LOGGER = Logger.getLogger(AsyncExecutionInterceptor.class);
 
     private final List<AsyncExecutorFactory> asyncExecutorManagerList = ExtensionLoader.getExtensionLoader(AsyncExecutorFactory.class).getAllExtension();
 
@@ -40,18 +46,20 @@ public class AsyncExecutionInterceptor implements MethodInterceptor {
             String executorName = async.executorName();
             for (AsyncExecutorFactory asyncExecutorManager : asyncExecutorManagerList) {
                 try {
-                    Method factoryMethod = asyncExecutorManager.getClass().getDeclaredMethod(executorName);
-                    Object ret = factoryMethod.invoke(asyncExecutorManager);
+                    Object target = AopUtil.getProxyTarget(asyncExecutorManager);
+                    Method factoryMethod = target.getClass().getDeclaredMethod(executorName);
+                    Object ret = factoryMethod.invoke(target);
                     if (ret == null || !ExecutorService.class.isAssignableFrom(ret.getClass())) {
-                        throw new RuntimeException("(" + executorName + ") executor not found");
+                        String i18nMessage = ExceptionI18nUtil.get("executor_not_found");
+                        i18nMessage = String.format(i18nMessage, executorName);
+                        throw new NrpcException(i18nMessage);
                     }
                     ExecutorService executorService = (ExecutorService) ret;
                     executorServiceMap.putIfAbsent(executorName, executorService);
                 } catch (NoSuchMethodException | InvocationTargetException e) {
                     executorServiceMap.putIfAbsent(executorName, defaultExecutor);
                 } catch (IllegalAccessException e) {
-                    //FIXME LOG
-                    e.printStackTrace();
+                    LOGGER.error(e);
                 }
 
             }

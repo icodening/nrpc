@@ -1,7 +1,6 @@
 package cn.icodening.rpc.registry.nacos;
 
 import cn.icodening.rpc.core.URL;
-import cn.icodening.rpc.plugin.time.PrintTime;
 import cn.icodening.rpc.registry.AbstractRegistry;
 import cn.icodening.rpc.registry.NotifyListener;
 import cn.icodening.rpc.registry.RegistryKeyConstant;
@@ -10,6 +9,7 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.listener.EventListener;
 import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.alibaba.nacos.api.naming.pojo.Instance;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class NacosRegistry extends AbstractRegistry {
 
+    private static final Logger LOGGER = Logger.getLogger(NacosRegistry.class);
+
     private final static String DEFAULT_GROUP = "DEFAULT_GROUP";
+
     private final static String DEFAULT_CLUSTER = "DEFAULT";
 
     private final NamingService namingService;
@@ -52,7 +55,7 @@ public class NacosRegistry extends AbstractRegistry {
                     groupName,
                     instance);
         } catch (NacosException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -66,7 +69,7 @@ public class NacosRegistry extends AbstractRegistry {
                     groupName,
                     instance);
         } catch (NacosException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -77,8 +80,7 @@ public class NacosRegistry extends AbstractRegistry {
         try {
             namingService.subscribe(serviceName, groupName, getEventListener(url, notifyListener));
         } catch (NacosException e) {
-            //FIXME LOG
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -89,8 +91,7 @@ public class NacosRegistry extends AbstractRegistry {
         try {
             namingService.unsubscribe(serviceName, groupName, getEventListener(url, notifyListener));
         } catch (NacosException e) {
-            //FIXME LOG
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -106,8 +107,7 @@ public class NacosRegistry extends AbstractRegistry {
                 urls.add(instanceUrl);
             }
         } catch (NacosException e) {
-            //FIXME LOG
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return urls;
     }
