@@ -1,2 +1,3 @@
 printTime=cn.icodening.rpc.plugin.time.PrintTimeAdvisor
 async=cn.icodening.rpc.plugin.async.AsyncAdvisor
+exception=cn.icodening.rpc.plugin.exception.ExceptionGlobalHandlerAdvisor

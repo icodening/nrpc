@@ -2,7 +2,10 @@ package cn.icodening.rpc.plugin.extension;
 
 
 import cn.icodening.rpc.core.Initializer;
+import cn.icodening.rpc.core.NrpcException;
 import cn.icodening.rpc.plugin.async.Async;
+
+import java.util.Random;
 
 /**
  * @author icodening
@@ -18,10 +21,16 @@ public class ExtensionImpl implements Extension, Initializer {
     }
 
     @Override
-    @Async
     public String echo(String string) {
         sleep(500);
+        Random random = new Random();
+        int i = random.nextInt(500);
         return "echo: " + string;
+    }
+
+    @Override
+    public void error() {
+        throw new NrpcException("test_error");
     }
 
     private void sleep(long time) {

@@ -1,6 +1,7 @@
 package cn.icodening.rpc.core.extension;
 
 import cn.icodening.rpc.core.ObjectFactory;
+import cn.icodening.rpc.core.util.ExceptionI18nUtil;
 import cn.icodening.rpc.core.util.Holder;
 import cn.icodening.rpc.core.util.ReflectUtil;
 import cn.icodening.rpc.core.util.StringUtil;
@@ -78,7 +79,9 @@ public class ExtensionLoader<T> {
                         scope = meta.scope();
                     }
                     if (!nameScopeMap.containsKey(scope)) {
-                        //FIXME WARN 提示作用域不存在，设为单例
+                        String scopeNotExist = ExceptionI18nUtil.get("SCOPE_NOT_EXIST");
+                        String errorMessage = String.format(scopeNotExist, scope);
+                        LOGGER.warn(errorMessage);
                         scope = Scope.SINGLETON;
                     }
                     ExtensionDefinition<T> extensionDefinition = new ExtensionDefinition<>(name,

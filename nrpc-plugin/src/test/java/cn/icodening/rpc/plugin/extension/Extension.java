@@ -12,4 +12,6 @@ public interface Extension {
     void say(String string);
 
     String echo(String string);
+
+    void error();
 }
