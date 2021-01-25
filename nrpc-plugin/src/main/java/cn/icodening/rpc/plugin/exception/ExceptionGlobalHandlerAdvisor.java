@@ -11,6 +11,9 @@ import java.lang.reflect.Method;
  */
 public class ExceptionGlobalHandlerAdvisor implements Advisor {
 
+    private static final boolean GLOBAL_EXCEPTION_HANDLER =
+            Boolean.parseBoolean(System.getProperty("nrpc.exception.handler.global", "true"));
+
     private final Advice nrpcExceptionHandler = new NrpcExceptionGlobalHandler();
 
     @Override
@@ -20,6 +23,6 @@ public class ExceptionGlobalHandlerAdvisor implements Advisor {
 
     @Override
     public boolean matchMethod(Method method, Class<?> targetClass) {
-        return true;
+        return GLOBAL_EXCEPTION_HANDLER;
     }
 }
