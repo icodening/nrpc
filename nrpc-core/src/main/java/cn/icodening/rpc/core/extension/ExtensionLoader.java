@@ -27,7 +27,7 @@ public class ExtensionLoader<T> {
 
     private static final Logger LOGGER = Logger.getLogger(ExtensionLoader.class);
 
-    public static final String DEFAULT_LOAD_PATH = "nrpc/";
+    public static final String DEFAULT_LOAD_PATH = "META-INF/nrpc/";
 
     /**
      * 扩展点加载器
