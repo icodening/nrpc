@@ -1,8 +1,8 @@
 package cn.icodening.rpc.core.extension;
 
 import cn.icodening.rpc.core.ObjectFactory;
-import cn.icodening.rpc.core.util.ExceptionI18nUtil;
 import cn.icodening.rpc.core.util.Holder;
+import cn.icodening.rpc.core.util.MessageManager;
 import cn.icodening.rpc.core.util.ReflectUtil;
 import cn.icodening.rpc.core.util.StringUtil;
 import org.apache.log4j.Logger;
@@ -79,7 +79,7 @@ public class ExtensionLoader<T> {
                         scope = meta.scope();
                     }
                     if (!nameScopeMap.containsKey(scope)) {
-                        String scopeNotExist = ExceptionI18nUtil.get("SCOPE_NOT_EXIST", scope);
+                        String scopeNotExist = MessageManager.get("SCOPE_NOT_EXIST", scope);
                         LOGGER.warn(scopeNotExist);
                         scope = Scope.SINGLETON;
                     }

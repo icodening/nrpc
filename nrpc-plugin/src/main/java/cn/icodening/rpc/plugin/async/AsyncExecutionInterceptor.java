@@ -5,7 +5,7 @@ import cn.icodening.rpc.aop.util.AopUtil;
 import cn.icodening.rpc.core.NrpcException;
 import cn.icodening.rpc.core.extension.ExtensionLoader;
 import cn.icodening.rpc.core.util.DefaultThreadPoolFactory;
-import cn.icodening.rpc.core.util.ExceptionI18nUtil;
+import cn.icodening.rpc.core.util.MessageManager;
 import cn.icodening.rpc.core.util.ReflectUtil;
 import cn.icodening.rpc.core.util.StringUtil;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -50,7 +50,7 @@ public class AsyncExecutionInterceptor implements MethodInterceptor {
                     Method factoryMethod = target.getClass().getDeclaredMethod(executorName);
                     Object ret = factoryMethod.invoke(target);
                     if (ret == null || !ExecutorService.class.isAssignableFrom(ret.getClass())) {
-                        String i18nMessage = ExceptionI18nUtil.get("EXECUTOR_NOT_FOUND", executorName);
+                        String i18nMessage = MessageManager.get("EXECUTOR_NOT_FOUND", executorName);
                         throw new NrpcException(i18nMessage);
                     }
                     ExecutorService executorService = (ExecutorService) ret;

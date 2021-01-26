@@ -14,28 +14,28 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author icodening
  * @date 2021.01.25
  */
-public class ExceptionI18nUtil {
+public class MessageManager {
 
     private static final String ERROR_FILE_PREFIX = "message_";
 
     private static final String ERROR_FILE_SUFFIX = ".properties";
 
-    private static final Logger LOGGER = Logger.getLogger(ExceptionI18nUtil.class);
+    private static final Logger LOGGER = Logger.getLogger(MessageManager.class);
 
     private static final String DEFAULT_LANGUAGE = System.getProperty("user.language", "zh");
 
-    private static final Map<String, ExceptionI18nUtil> I18N_UTILS = new ConcurrentHashMap<>();
+    private static final Map<String, MessageManager> I18N_UTILS = new ConcurrentHashMap<>();
 
     private final Map<String, String> messageMap = new ConcurrentHashMap<>();
 
-    private ExceptionI18nUtil() {
+    private MessageManager() {
     }
 
     private static String getResourcesName(String language) {
         return ERROR_FILE_PREFIX + language + ERROR_FILE_SUFFIX;
     }
 
-    public static ExceptionI18nUtil getInstance() {
+    public static MessageManager getInstance() {
         return getInstance(DEFAULT_LANGUAGE);
     }
 
@@ -43,14 +43,15 @@ public class ExceptionI18nUtil {
         return getInstance().getMessage(code, args);
     }
 
-    public static ExceptionI18nUtil getInstance(String language) {
-        ExceptionI18nUtil exceptionI18nUtil = I18N_UTILS.get(language);
-        if (exceptionI18nUtil == null) {
+    public static MessageManager getInstance(String language) {
+        language = language.intern();
+        MessageManager messageManager = I18N_UTILS.get(language);
+        if (messageManager == null) {
             synchronized (language) {
-                exceptionI18nUtil = I18N_UTILS.get(language);
-                if (exceptionI18nUtil == null) {
-                    I18N_UTILS.putIfAbsent(language, new ExceptionI18nUtil());
-                    exceptionI18nUtil = I18N_UTILS.get(language);
+                messageManager = I18N_UTILS.get(language);
+                if (messageManager == null) {
+                    I18N_UTILS.putIfAbsent(language, new MessageManager());
+                    messageManager = I18N_UTILS.get(language);
                     try {
                         Enumeration<URL> resources =
                                 Thread.currentThread().getContextClassLoader()
@@ -63,7 +64,7 @@ public class ExceptionI18nUtil {
                                 int index = ret.indexOf("=");
                                 String code = ret.substring(0, index);
                                 String message = ret.substring(index + 1);
-                                exceptionI18nUtil.messageMap.putIfAbsent(code, message);
+                                messageManager.messageMap.putIfAbsent(code, message);
                             }
                         }
                     } catch (IOException e) {
@@ -72,7 +73,7 @@ public class ExceptionI18nUtil {
                 }
             }
         }
-        return exceptionI18nUtil;
+        return messageManager;
     }
 
     public String getMessage(String code, Object... args) {
