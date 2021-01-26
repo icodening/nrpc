@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ExceptionI18nUtil {
 
-    private static final String ERROR_FILE_PREFIX = "error_";
+    private static final String ERROR_FILE_PREFIX = "message_";
 
     private static final String ERROR_FILE_SUFFIX = ".properties";
 
@@ -39,8 +39,8 @@ public class ExceptionI18nUtil {
         return getInstance(DEFAULT_LANGUAGE);
     }
 
-    public static String get(String code) {
-        return getInstance().getMessage(code);
+    public static String get(String code, Object... args) {
+        return getInstance().getMessage(code, args);
     }
 
     public static ExceptionI18nUtil getInstance(String language) {
@@ -75,7 +75,8 @@ public class ExceptionI18nUtil {
         return exceptionI18nUtil;
     }
 
-    public String getMessage(String code) {
-        return messageMap.get(code);
+    public String getMessage(String code, Object... args) {
+        String value = messageMap.get(code);
+        return String.format(value, args);
     }
 }
