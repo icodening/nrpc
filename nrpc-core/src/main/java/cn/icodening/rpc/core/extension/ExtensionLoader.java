@@ -79,9 +79,8 @@ public class ExtensionLoader<T> {
                         scope = meta.scope();
                     }
                     if (!nameScopeMap.containsKey(scope)) {
-                        String scopeNotExist = ExceptionI18nUtil.get("SCOPE_NOT_EXIST");
-                        String errorMessage = String.format(scopeNotExist, scope);
-                        LOGGER.warn(errorMessage);
+                        String scopeNotExist = ExceptionI18nUtil.get("SCOPE_NOT_EXIST", scope);
+                        LOGGER.warn(scopeNotExist);
                         scope = Scope.SINGLETON;
                     }
                     ExtensionDefinition<T> extensionDefinition = new ExtensionDefinition<>(name,
