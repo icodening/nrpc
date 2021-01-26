@@ -3,6 +3,7 @@ package cn.icodening.rpc.plugin.extension;
 
 import cn.icodening.rpc.core.Initializer;
 import cn.icodening.rpc.core.NrpcException;
+import cn.icodening.rpc.core.util.ExceptionI18nUtil;
 import cn.icodening.rpc.plugin.async.Async;
 
 import java.util.Random;
@@ -29,8 +30,8 @@ public class ExtensionImpl implements Extension, Initializer {
     }
 
     @Override
-    public void error() {
-        throw new NrpcException("test_error");
+    public void error(Object arg) {
+        throw new NrpcException(ExceptionI18nUtil.get("test_error", arg));
     }
 
     private void sleep(long time) {

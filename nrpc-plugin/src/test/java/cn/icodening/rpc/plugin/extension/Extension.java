@@ -13,5 +13,5 @@ public interface Extension {
 
     String echo(String string);
 
-    void error();
+    void error(Object arg);
 }

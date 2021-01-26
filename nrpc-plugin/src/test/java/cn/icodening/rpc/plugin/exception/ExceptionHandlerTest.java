@@ -14,6 +14,6 @@ public class ExceptionHandlerTest {
     @Test
     public void globalExceptionHandler(){
         Extension extension = ExtensionLoader.getExtensionLoader(Extension.class).getExtension(ExtensionImpl.class);
-        extension.error();
+        extension.error("Hello");
     }
 }
