@@ -50,7 +50,7 @@ public class AsyncExecutionInterceptor implements MethodInterceptor {
                     Method factoryMethod = target.getClass().getDeclaredMethod(executorName);
                     Object ret = factoryMethod.invoke(target);
                     if (ret == null || !ExecutorService.class.isAssignableFrom(ret.getClass())) {
-                        String i18nMessage = MessageManager.get("EXECUTOR_NOT_FOUND", executorName);
+                        String i18nMessage = MessageManager.get("executor.not.found", executorName);
                         throw new NrpcException(i18nMessage);
                     }
                     ExecutorService executorService = (ExecutorService) ret;

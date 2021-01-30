@@ -79,7 +79,7 @@ public class ExtensionLoader<T> {
                         scope = meta.scope();
                     }
                     if (!nameScopeMap.containsKey(scope)) {
-                        String scopeNotExist = MessageManager.get("SCOPE_NOT_EXIST", scope);
+                        String scopeNotExist = MessageManager.get("scope.not.exist", scope);
                         LOGGER.warn(scopeNotExist);
                         scope = Scope.SINGLETON;
                     }
@@ -108,15 +108,12 @@ public class ExtensionLoader<T> {
 
     @SuppressWarnings("unchecked")
     public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> clz) {
-        if (clz == null) {
-            throw new NullPointerException("Extension type == null");
-        }
+        Objects.requireNonNull(clz, MessageManager.get("extension.type.is.require.not.null"));
         if (!clz.isInterface()) {
-            throw new IllegalArgumentException("Extension type (" + clz + ") is not an interface");
+            throw new IllegalArgumentException(MessageManager.get("extension.type.is.not.interface", clz));
         }
         if (!withExtensionAnnotation(clz)) {
-            throw new IllegalArgumentException("Extension type (" + clz
-                    + ") is not an interface, missing annotated @" + Extensible.class.getName());
+            throw new IllegalArgumentException(MessageManager.get("extensible.not.exist", "@" + Extensible.class.getName()));
         }
         Holder<ExtensionLoader<?>> extensionLoaderHolder = EXTENSION_LOADER_HOLDER.get(clz);
         if (extensionLoaderHolder == null) {
@@ -160,6 +157,7 @@ public class ExtensionLoader<T> {
             throw new IllegalArgumentException("Extension name == null");
         }
         ExtensionDefinition<T> extensionDefinition = nameExtensionWrapperMap.get(name);
+        Objects.requireNonNull(extensionDefinition, MessageManager.get("extension.not.exist", name));
         return extensionDefinition.getTarget();
     }
 
@@ -189,7 +187,7 @@ public class ExtensionLoader<T> {
             result = getExtension(annotation.value());
         }
         if (null == result) {
-            LOGGER.error(this.type + " default extension is null, please add to @" + Extensible.class.getSimpleName() + " value");
+            LOGGER.error(MessageManager.get("default.extension.not.exist", type));
         }
         return result;
     }

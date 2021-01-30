@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,13 +17,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MessageManager {
 
-    private static final String ERROR_FILE_PREFIX = "message_";
+    private static final String MESSAGE_FILE_PREFIX = "message";
 
-    private static final String ERROR_FILE_SUFFIX = ".properties";
+    private static final String MESSAGE_FILE_SUFFIX = ".properties";
 
     private static final Logger LOGGER = Logger.getLogger(MessageManager.class);
 
-    private static final String DEFAULT_LANGUAGE = System.getProperty("user.language", "zh");
+    private static final String LOCALE_LANGUAGE = Locale.getDefault().toString();
+
+    private static final String DEFAULT_LANGUAGE = "";
 
     private static final Map<String, MessageManager> I18N_UTILS = new ConcurrentHashMap<>();
 
@@ -32,11 +35,18 @@ public class MessageManager {
     }
 
     private static String getResourcesName(String language) {
-        return ERROR_FILE_PREFIX + language + ERROR_FILE_SUFFIX;
+        if (StringUtil.isBlank(language)) {
+            return MESSAGE_FILE_PREFIX + MESSAGE_FILE_SUFFIX;
+        }
+        return MESSAGE_FILE_PREFIX + "_" + language + MESSAGE_FILE_SUFFIX;
     }
 
     public static MessageManager getInstance() {
-        return getInstance(DEFAULT_LANGUAGE);
+        MessageManager instance = getInstance(LOCALE_LANGUAGE);
+        if (instance == null) {
+            instance = getInstance(DEFAULT_LANGUAGE);
+        }
+        return instance;
     }
 
     public static String get(String code, Object... args) {
@@ -78,6 +88,9 @@ public class MessageManager {
 
     public String getMessage(String code, Object... args) {
         String value = messageMap.get(code);
+        if (StringUtil.isBlank(value)) {
+            return code;
+        }
         return String.format(value, args);
     }
 }
