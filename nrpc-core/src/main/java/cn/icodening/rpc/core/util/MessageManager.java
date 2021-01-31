@@ -74,7 +74,7 @@ public class MessageManager {
                                 int index = ret.indexOf("=");
                                 String code = ret.substring(0, index);
                                 String message = ret.substring(index + 1);
-                                messageManager.messageMap.putIfAbsent(code, message);
+                                messageManager.messageMap.putIfAbsent(code, message.intern());
                             }
                         }
                     } catch (IOException e) {
@@ -88,7 +88,7 @@ public class MessageManager {
 
     public String getMessage(String code, Object... args) {
         String value = messageMap.get(code);
-        if (StringUtil.isBlank(value)) {
+        if (value == null) {
             return code;
         }
         return String.format(value, args);
