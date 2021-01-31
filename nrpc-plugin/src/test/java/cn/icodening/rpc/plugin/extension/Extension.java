@@ -1,6 +1,7 @@
 package cn.icodening.rpc.plugin.extension;
 
 import cn.icodening.rpc.core.extension.Extensible;
+import cn.icodening.rpc.core.util.ListenableFuture;
 
 /**
  * @author icodening
@@ -14,4 +15,6 @@ public interface Extension {
     String echo(String string);
 
     void error(Object arg);
+
+    ListenableFuture<String> getString(String string);
 }

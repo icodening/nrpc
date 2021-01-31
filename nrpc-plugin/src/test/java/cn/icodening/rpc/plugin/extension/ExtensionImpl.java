@@ -3,8 +3,10 @@ package cn.icodening.rpc.plugin.extension;
 
 import cn.icodening.rpc.core.Initializer;
 import cn.icodening.rpc.core.NrpcException;
+import cn.icodening.rpc.core.util.ListenableFuture;
 import cn.icodening.rpc.core.util.MessageManager;
 import cn.icodening.rpc.plugin.async.Async;
+import cn.icodening.rpc.plugin.async.AsyncResult;
 
 import java.util.Random;
 
@@ -15,7 +17,7 @@ import java.util.Random;
 public class ExtensionImpl implements Extension, Initializer {
 
     @Override
-    @Async(executorName = "myExecutor")
+    @Async
     public void say(String string) {
         sleep(500);
         System.out.println(Thread.currentThread().getName() + ",  say: " + string);
@@ -32,6 +34,18 @@ public class ExtensionImpl implements Extension, Initializer {
     @Override
     public void error(Object arg) {
         throw new NrpcException(MessageManager.get("test_error", arg));
+    }
+
+    @Override
+    @Async(executorName = "myExecutor")
+    public ListenableFuture<String> getString(String string) {
+        String result = "async : " + string;
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return new AsyncResult<>(result);
     }
 
     private void sleep(long time) {

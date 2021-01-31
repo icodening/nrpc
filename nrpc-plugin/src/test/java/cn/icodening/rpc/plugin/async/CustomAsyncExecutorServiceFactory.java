@@ -1,8 +1,8 @@
 package cn.icodening.rpc.plugin.async;
 
-import cn.icodening.rpc.core.util.DefaultThreadPoolFactory;
+import cn.icodening.rpc.core.util.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 
 /**
  * @author icodening
@@ -10,7 +10,15 @@ import java.util.concurrent.ExecutorService;
  */
 public class CustomAsyncExecutorServiceFactory implements AsyncExecutorFactory {
 
-    public ExecutorService myExecutor() {
-        return DefaultThreadPoolFactory.create("myThread", 100);
+    public Executor myExecutor() {
+        ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+        threadPoolTaskExecutor.setCorePoolSize(Integer.MAX_VALUE);
+        threadPoolTaskExecutor.setThreadFactory((runnable) -> {
+            Thread thread = new Thread(runnable);
+            thread.setName("custom-name");
+            return thread;
+        });
+        threadPoolTaskExecutor.initialize();
+        return threadPoolTaskExecutor;
     }
 }
