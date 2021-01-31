@@ -217,4 +217,15 @@ public class ReflectUtil {
         }
         return (Class<?>) types[0];
     }
+
+    public static void rethrowException(Throwable ex) throws Exception {
+        if (ex instanceof Exception) {
+            throw (Exception) ex;
+        }
+        if (ex instanceof Error) {
+            throw (Error) ex;
+        }
+        throw new UndeclaredThrowableException(ex);
+    }
+
 }

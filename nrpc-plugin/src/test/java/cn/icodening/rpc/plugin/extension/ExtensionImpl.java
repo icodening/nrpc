@@ -3,8 +3,8 @@ package cn.icodening.rpc.plugin.extension;
 
 import cn.icodening.rpc.core.Initializer;
 import cn.icodening.rpc.core.NrpcException;
-import cn.icodening.rpc.core.util.ListenableFuture;
 import cn.icodening.rpc.core.util.MessageManager;
+import cn.icodening.rpc.core.util.concurrent.ListenableFuture;
 import cn.icodening.rpc.plugin.async.Async;
 import cn.icodening.rpc.plugin.async.AsyncResult;
 
@@ -45,6 +45,7 @@ public class ExtensionImpl implements Extension, Initializer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.out.println(1/0);
         return new AsyncResult<>(result);
     }
 

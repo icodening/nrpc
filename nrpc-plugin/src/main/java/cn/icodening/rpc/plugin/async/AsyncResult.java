@@ -1,11 +1,12 @@
 package cn.icodening.rpc.plugin.async;
 
-import cn.icodening.rpc.core.util.ListenableFuture;
+import cn.icodening.rpc.core.util.concurrent.FailureCallback;
+import cn.icodening.rpc.core.util.concurrent.ListenableFuture;
+import cn.icodening.rpc.core.util.concurrent.SuccessCallback;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Consumer;
 
 /**
  * TODO 优化onSuccess、onFailure回调
@@ -23,13 +24,11 @@ public class AsyncResult<V> implements ListenableFuture<V> {
     }
 
     @Override
-    public void onSuccess(Consumer<V> consumer) {
-
+    public void addSuccessCallback(SuccessCallback<V> successConsumer) {
     }
 
     @Override
-    public void onFailure(Consumer<Throwable> consumer) {
-
+    public void addFailureCallback(FailureCallback throwableConsumer) {
     }
 
     @Override

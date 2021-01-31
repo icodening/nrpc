@@ -1,7 +1,6 @@
 package cn.icodening.rpc.core.util.concurrent;
 
 import cn.icodening.rpc.core.Initializer;
-import cn.icodening.rpc.core.util.ListenableFuture;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;

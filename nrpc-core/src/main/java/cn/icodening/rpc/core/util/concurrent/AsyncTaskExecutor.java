@@ -1,7 +1,6 @@
 package cn.icodening.rpc.core.util.concurrent;
 
 import cn.icodening.rpc.core.extension.Extensible;
-import cn.icodening.rpc.core.util.ListenableFuture;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;

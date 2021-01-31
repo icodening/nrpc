@@ -23,7 +23,7 @@ public class DefaultThreadPoolFactory {
     }
 
     public static ExecutorService create(final String threadName, int coreSize, int maxPoolSize, int queueSize) {
-        return create(threadName, coreSize, maxPoolSize, queueSize, new ThreadFactory() {
+        return create(coreSize, maxPoolSize, queueSize, new ThreadFactory() {
             private final AtomicInteger integer = new AtomicInteger(0);
 
             @Override
@@ -35,7 +35,7 @@ public class DefaultThreadPoolFactory {
         });
     }
 
-    public static ExecutorService create(final String threadName, int coreSize, int maxPoolSize, int queueSize, ThreadFactory threadFactory) {
+    public static ExecutorService create(int coreSize, int maxPoolSize, int queueSize, ThreadFactory threadFactory) {
         coreSize = coreSize <= 0 ? MIN_THREAD_POOL_SIZE : coreSize;
         maxPoolSize = Math.max(maxPoolSize, coreSize);
         BlockingQueue<Runnable> blockingQueue =
