@@ -1,4 +1,4 @@
-package cn.icodening.rpc.core.util.concurrent;
+package cn.icodening.rpc.core.task;
 
 import cn.icodening.rpc.core.Initializer;
 
@@ -20,13 +20,14 @@ public class ThreadPoolTaskExecutor implements AsyncTaskExecutor, Initializer {
     private int queueCapacity = Integer.MAX_VALUE;
 
     private ThreadFactory threadFactory = new ThreadFactory() {
+        private static final String THREAD_NAME = EXECUTOR_THREAD_NAME_PREFIX + "-";
+
         private final AtomicInteger integer = new AtomicInteger(0);
-        private final String threadName = EXECUTOR_THREAD_NAME_PREFIX + "-";
 
         @Override
         public Thread newThread(Runnable r) {
             Thread thread = new Thread(r);
-            thread.setName(threadName + integer.getAndIncrement());
+            thread.setName(THREAD_NAME + integer.getAndIncrement());
             return thread;
         }
     };

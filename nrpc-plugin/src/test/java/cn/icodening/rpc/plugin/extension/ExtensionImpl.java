@@ -3,8 +3,8 @@ package cn.icodening.rpc.plugin.extension;
 
 import cn.icodening.rpc.core.Initializer;
 import cn.icodening.rpc.core.NrpcException;
+import cn.icodening.rpc.core.task.ListenableFuture;
 import cn.icodening.rpc.core.util.MessageManager;
-import cn.icodening.rpc.core.util.concurrent.ListenableFuture;
 import cn.icodening.rpc.plugin.async.Async;
 import cn.icodening.rpc.plugin.async.AsyncResult;
 

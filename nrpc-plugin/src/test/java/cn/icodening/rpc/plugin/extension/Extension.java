@@ -1,7 +1,7 @@
 package cn.icodening.rpc.plugin.extension;
 
 import cn.icodening.rpc.core.extension.Extensible;
-import cn.icodening.rpc.core.util.concurrent.ListenableFuture;
+import cn.icodening.rpc.core.task.ListenableFuture;
 
 /**
  * @author icodening

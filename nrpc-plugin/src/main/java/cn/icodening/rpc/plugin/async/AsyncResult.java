@@ -1,8 +1,8 @@
 package cn.icodening.rpc.plugin.async;
 
-import cn.icodening.rpc.core.util.concurrent.FailureCallback;
-import cn.icodening.rpc.core.util.concurrent.ListenableFuture;
-import cn.icodening.rpc.core.util.concurrent.SuccessCallback;
+import cn.icodening.rpc.core.task.FailureCallback;
+import cn.icodening.rpc.core.task.ListenableFuture;
+import cn.icodening.rpc.core.task.SuccessCallback;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;

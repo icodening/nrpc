@@ -1,7 +1,7 @@
 package cn.icodening.rpc.plugin.async;
 
 import cn.icodening.rpc.core.extension.ExtensionLoader;
-import cn.icodening.rpc.core.util.concurrent.ListenableFuture;
+import cn.icodening.rpc.core.task.ListenableFuture;
 import cn.icodening.rpc.plugin.extension.Extension;
 import cn.icodening.rpc.plugin.extension.ExtensionImpl;
 import org.junit.Test;
