@@ -1,10 +1,8 @@
 package cn.icodening.rpc.core.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -17,7 +15,7 @@ public class ReflectUtil {
     private ReflectUtil() {
     }
 
-    private static final Map<Class<?>, Method[]> declaredMethodsCache = new ConcurrentHashMap<>(256);
+    private static final Map<Class<?>, Method[]> DECLARED_METHODS_CACHE = new ConcurrentHashMap<>(256);
     private static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
 
     private static boolean hasSameParams(Method method, Class<?>[] paramTypes) {
@@ -38,6 +36,21 @@ public class ReflectUtil {
             searchType = searchType.getSuperclass();
         }
         return null;
+    }
+
+    public static List<Method> findAnnotationMethods(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        Objects.requireNonNull(clazz, MessageManager.get("object.required.not.null"));
+        Objects.requireNonNull(annotationClass, MessageManager.get("object.required.not.null"));
+        Method[] declaredMethods = clazz.getDeclaredMethods();
+        List<Method> methods = new ArrayList<>();
+        for (Method declaredMethod : declaredMethods) {
+            Annotation declaredAnnotation = declaredMethod.getDeclaredAnnotation(annotationClass);
+            if (declaredAnnotation == null) {
+                continue;
+            }
+            methods.add(declaredMethod);
+        }
+        return methods;
     }
 
     /**
@@ -62,7 +75,7 @@ public class ReflectUtil {
     }
 
     public static Method[] getDeclaredMethods(Class<?> clazz, boolean defensive) {
-        Method[] result = declaredMethodsCache.get(clazz);
+        Method[] result = DECLARED_METHODS_CACHE.get(clazz);
         if (result == null) {
             try {
                 Method[] declaredMethods = clazz.getDeclaredMethods();
@@ -78,7 +91,7 @@ public class ReflectUtil {
                 } else {
                     result = declaredMethods;
                 }
-                declaredMethodsCache.put(clazz, (result.length == 0 ? EMPTY_METHOD_ARRAY : result));
+                DECLARED_METHODS_CACHE.put(clazz, (result.length == 0 ? EMPTY_METHOD_ARRAY : result));
             } catch (Throwable ex) {
                 throw new IllegalStateException("Failed to introspect Class [" + clazz.getName() +
                         "] from ClassLoader [" + clazz.getClassLoader() + "]", ex);
@@ -156,6 +169,16 @@ public class ReflectUtil {
         return null;
     }
 
+    public static Field getField(Class<?> clazz, String fieldName) {
+        Objects.requireNonNull(clazz);
+        try {
+            return clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> T getFieldValue(Object object, Field field) {
         Object value = null;
@@ -170,10 +193,31 @@ public class ReflectUtil {
         return (T) value;
     }
 
+    public static void setFieldValue(Object object, Field field, Object value) {
+        try {
+            field.set(object, value);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void makeAccessible(Method method) {
-        if ((!Modifier.isPublic(method.getModifiers()) ||
-                !Modifier.isPublic(method.getDeclaringClass().getModifiers())) && !method.isAccessible()) {
+        if (method.isAccessible()) {
+            return;
+        }
+        if (!Modifier.isPublic(method.getModifiers()) ||
+                !Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
             method.setAccessible(true);
+        }
+    }
+
+    public static void makeAccessible(Field field) {
+        if (field.isAccessible()) {
+            return;
+        }
+        if (!Modifier.isPublic(field.getModifiers()) ||
+                !Modifier.isPublic(field.getDeclaringClass().getModifiers())) {
+            field.setAccessible(true);
         }
     }
 
@@ -191,6 +235,10 @@ public class ReflectUtil {
      * 获取指定Class上的泛型
      */
     public static Class<?> findGenericClass(Class<?> clz) {
+        return findGenericClass(clz, 0);
+    }
+
+    public static Class<?> findGenericClass(Class<?> clz, int index) {
         if (clz == null) {
             return null;
         }
@@ -199,13 +247,13 @@ public class ReflectUtil {
         if (Object.class.equals(genericSuperclass)) {
             Type[] interfaces = clz.getGenericInterfaces();
             try {
-                parameterizedType = (ParameterizedType) interfaces[0];
+                parameterizedType = (ParameterizedType) interfaces[index];
             } catch (ClassCastException e) {
 //                LOGGER.warn(e.getMessage());
                 return null;
             }
 
-            return (Class<?>) parameterizedType.getActualTypeArguments()[0];
+            return (Class<?>) parameterizedType.getActualTypeArguments()[index];
         }
         parameterizedType = (ParameterizedType) genericSuperclass;
         if (parameterizedType == null) {
@@ -215,7 +263,7 @@ public class ReflectUtil {
         if (types.length == 0) {
             return null;
         }
-        return (Class<?>) types[0];
+        return (Class<?>) types[index];
     }
 
     public static void rethrowException(Throwable ex) throws Exception {
