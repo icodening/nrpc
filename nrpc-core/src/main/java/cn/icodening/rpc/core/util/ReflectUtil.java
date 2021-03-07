@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 /**
  * 反射工具类
@@ -274,6 +275,22 @@ public class ReflectUtil {
             throw (Error) ex;
         }
         throw new UndeclaredThrowableException(ex);
+    }
+
+    public static Object invokeMethod(Method method, Object target, Object... args) {
+        return invokeMethod(method, target, null, args);
+    }
+
+    public static Object invokeMethod(Method method, Object target, Consumer<Throwable> exHandler, Object... args) {
+        try {
+            makeAccessible(method);
+            return method.invoke(target, args);
+        } catch (Throwable e) {
+            if (exHandler != null) {
+                exHandler.accept(e);
+            }
+        }
+        return null;
     }
 
 }

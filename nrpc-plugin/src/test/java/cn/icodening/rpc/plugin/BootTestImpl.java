@@ -3,6 +3,8 @@ package cn.icodening.rpc.plugin;
 import cn.icodening.rpc.core.boot.AbstractBootAdapter;
 import cn.icodening.rpc.plugin.time.PrintTime;
 
+import javax.annotation.PreDestroy;
+
 /**
  * @author icodening
  * @date 2021.01.22
@@ -25,8 +27,13 @@ public class BootTestImpl extends AbstractBootAdapter {
         }
     }
 
+    @PreDestroy
+    public void myDestroy(){
+        System.out.println(this.getClass().getSimpleName() +" myDestroy 被销毁了");
+    }
+
     @Override
     protected void doDestroy() {
-        System.out.println("被销毁了");
+        System.out.println(this.getClass().getSimpleName() +"被销毁了");
     }
 }

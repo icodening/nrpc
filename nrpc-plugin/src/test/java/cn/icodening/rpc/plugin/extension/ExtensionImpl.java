@@ -8,6 +8,7 @@ import cn.icodening.rpc.core.util.MessageManager;
 import cn.icodening.rpc.plugin.async.Async;
 import cn.icodening.rpc.plugin.async.AsyncResult;
 
+import javax.annotation.PostConstruct;
 import java.util.Random;
 
 /**
@@ -15,6 +16,17 @@ import java.util.Random;
  * @date 2021.01.23
  */
 public class ExtensionImpl implements Extension, Initializer {
+
+    @PostConstruct
+    public void init1() {
+        System.out.println("init 1");
+    }
+
+    @PostConstruct
+    public void init2() {
+        System.out.println("init 2");
+    }
+
 
     @Override
     @Async

@@ -1,11 +1,11 @@
 package cn.icodening.rpc.plugin;
 
-import cn.icodening.rpc.core.Sortable;
 import cn.icodening.rpc.aop.Advisor;
 import cn.icodening.rpc.aop.AfterReturningAdvice;
+import cn.icodening.rpc.core.Sortable;
 import cn.icodening.rpc.core.extension.Extensible;
 import cn.icodening.rpc.core.util.Holder;
-import cn.icodening.rpc.plugin.init.InitializerExtensionPostProcessor;
+import cn.icodening.rpc.plugin.lifecycle.InitializerDestroyPostProcessor;
 
 import java.lang.reflect.Method;
 
@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
  * 符合条件的类将会在被实例化后执行{@link AfterReturningAdvice#afterReturning(Holder, Method, Object[], Object)}中的逻辑
  * <p>
  * 基本默认实现如下
- * {@link InitializerExtensionPostProcessor} 实例化完毕后进行初始化操作
+ * {@link InitializerDestroyPostProcessor} 实例化完毕后进行初始化和预销毁
  * {@link ExtensionProxyCreator} 实例化完毕后生成代理对象
  *
  * @author icodening
