@@ -6,6 +6,8 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * TODO 需要新增线程池销毁功能
+ *
  * @author icodening
  * @date 2021.01.31
  */
@@ -18,6 +20,16 @@ public class ThreadPoolTaskExecutor implements AsyncTaskExecutor, Initializer {
     private int keepAliveSeconds = 60;
 
     private int queueCapacity = Integer.MAX_VALUE;
+
+    private TaskDecorator taskDecorator;
+
+    public TaskDecorator getTaskDecorator() {
+        return taskDecorator;
+    }
+
+    public void setTaskDecorator(TaskDecorator taskDecorator) {
+        this.taskDecorator = taskDecorator;
+    }
 
     private ThreadFactory threadFactory = new ThreadFactory() {
         private static final String THREAD_NAME = EXECUTOR_THREAD_NAME_PREFIX + "-";
@@ -42,7 +54,17 @@ public class ThreadPoolTaskExecutor implements AsyncTaskExecutor, Initializer {
         } else {
             workQueue = new SynchronousQueue<>();
         }
-        threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveSeconds, TimeUnit.SECONDS, workQueue, threadFactory);
+        if (taskDecorator != null) {
+            threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveSeconds, TimeUnit.SECONDS, workQueue, threadFactory) {
+                @Override
+                public void execute(Runnable command) {
+                    Runnable decorated = taskDecorator.decorate(command);
+                    super.execute(decorated);
+                }
+            };
+        } else {
+            threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveSeconds, TimeUnit.SECONDS, workQueue, threadFactory);
+        }
     }
 
     public synchronized int getCorePoolSize() {
