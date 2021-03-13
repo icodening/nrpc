@@ -1,23 +1,35 @@
 package cn.icodening.rpc.transport;
 
-import cn.icodening.rpc.core.Lifecycle;
-import cn.icodening.rpc.core.URL;
+import cn.icodening.rpc.core.Node;
+import cn.icodening.rpc.core.boot.Boot;
+import cn.icodening.rpc.core.exchange.Response;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
 /**
+ * RPC服务端
+ *
  * @author icodening
  * @date 2021.01.24
  */
-public interface Server extends Lifecycle {
+public interface Server extends Boot, Node {
 
-    URL getUrl();
+    /**
+     * 获得所有管道
+     *
+     * @return
+     */
+    Collection<NrpcChannel> getChannels();
 
-    InetSocketAddress getLocalAddress();
+    NrpcChannel getChannel(InetSocketAddress remoteAddress);
 
-    Collection<Channel> getChannels();
+    /**
+     * 获得一个ChannelHandler
+     *
+     * @return ChannelHandler
+     */
+    NrpcChannelHandler getNrpcChannelHandler();
 
-    Channel getChannel(InetSocketAddress remoteAddress);
-
+    void response(Response response);
 }

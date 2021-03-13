@@ -13,6 +13,7 @@
         <module>nrpc-transport</module>
         <module>nrpc-aop</module>
         <module>nrpc-plugin</module>
+        <module>nrpc-config</module>
     </modules>
 
     <name>nrpc-parent</name>

@@ -1,17 +1,24 @@
 package cn.icodening.rpc.transport;
 
-import cn.icodening.rpc.core.Lifecycle;
 import cn.icodening.rpc.core.Node;
-
-import java.net.InetSocketAddress;
+import cn.icodening.rpc.core.boot.Boot;
+import cn.icodening.rpc.core.exchange.Request;
 
 /**
+ * RPC客户端
+ *
  * @author icodening
  * @date 2021.01.24
  */
-public interface Client extends Lifecycle, Node {
+public interface Client extends Boot, Node {
 
-    ChannelHandler getChannelHandler();
+    /**
+     * 获得一个ChannelHandler
+     *
+     * @return ChannelHandler
+     */
+    NrpcChannelHandler getNrpcChannelHandler();
 
-    InetSocketAddress getLocalAddress();
+    void request(Request request);
+
 }
