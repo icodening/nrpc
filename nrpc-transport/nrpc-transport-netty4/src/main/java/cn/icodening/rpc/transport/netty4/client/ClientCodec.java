@@ -15,7 +15,7 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
- * FIXME buffer缓冲池复用，减少内存消耗
+ * FIXME 1.buffer缓冲池复用，减少内存消耗  2.serialization应从自身配置中获取
  *
  * @author icodening
  * @date 2021.03.10

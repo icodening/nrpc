@@ -15,6 +15,7 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
+ * FIXME 临时这样写，serialization方式应从消费者端配置获取
  * @author icodening
  * @date 2021.03.10
  */
