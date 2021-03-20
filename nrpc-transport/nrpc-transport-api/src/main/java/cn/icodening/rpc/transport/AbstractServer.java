@@ -2,7 +2,6 @@ package cn.icodening.rpc.transport;
 
 import cn.icodening.rpc.core.URL;
 import cn.icodening.rpc.core.boot.AbstractBootAdapter;
-import cn.icodening.rpc.core.exchange.Response;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -30,10 +29,6 @@ public abstract class AbstractServer extends AbstractBootAdapter implements Serv
     @Override
     public NrpcChannel getChannel(InetSocketAddress remoteAddress) {
         return null;
-    }
-
-    @Override
-    public void response(Response response) {
     }
 
     @Override

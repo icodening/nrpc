@@ -1,7 +1,9 @@
 package cn.icodening.rpc.transport.netty4.client;
 
+import cn.icodening.rpc.common.Protocol;
 import cn.icodening.rpc.core.URL;
 import cn.icodening.rpc.core.exchange.Request;
+import cn.icodening.rpc.core.extension.ExtensionLoader;
 import cn.icodening.rpc.transport.AbstractClient;
 import cn.icodening.rpc.transport.NrpcChannelHandler;
 import io.netty.bootstrap.Bootstrap;
@@ -9,8 +11,6 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
 import org.apache.log4j.Logger;
 
 /**
@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
  * @date 2021.03.10
  */
 public class Netty4Client extends AbstractClient {
-    //        private static final Logger LOGGER = LoggerFactory.getLogger(Netty4Client.class);
     private static final Logger LOGGER = Logger.getLogger(Netty4Client.class);
 
     private EventLoopGroup group;
@@ -26,6 +25,8 @@ public class Netty4Client extends AbstractClient {
     private Bootstrap bootstrap;
 
     private Channel channel;
+
+    private Protocol protocol;
 
     public Netty4Client(URL url, NrpcChannelHandler nrpcChannelHandler) {
         super(url, nrpcChannelHandler);
@@ -35,8 +36,10 @@ public class Netty4Client extends AbstractClient {
     protected void doInitialize() {
         this.group = new NioEventLoopGroup();
         try {
+            String protocolName = getUrl().getProtocol();
+            this.protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(protocolName);
             bootstrap = new Bootstrap();
-            ChannelHandler nettyClientHandler = new NettyClientHandler(getUrl(), getNrpcChannelHandler());
+            ChannelHandler nettyClientHandler = new Netty4ClientHandler(getUrl(), getNrpcChannelHandler());
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.TCP_NODELAY, true)
@@ -44,10 +47,8 @@ public class Netty4Client extends AbstractClient {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new LengthFieldBasedFrameDecoder(
-                                    Integer.MAX_VALUE, 0, 4, 0, 4, false));
-                            pipeline.addLast(new LengthFieldPrepender(4));
-                            pipeline.addLast(new ClientCodec());
+                            pipeline.addLast(new Netty4ClientDecoder(protocol.getClientCodec()));
+                            pipeline.addLast(new Netty4ClientEncoder(protocol.getClientCodec()));
                             pipeline.addLast(nettyClientHandler);
                         }
                     });
@@ -61,7 +62,12 @@ public class Netty4Client extends AbstractClient {
     @Override
     protected void doStart() {
         try {
-            ChannelFuture connect = bootstrap.connect(getUrl().getHost(), getUrl().getPort()).sync();
+            int port = 0;
+            if (getUrl().getPort() == null || getUrl().getPort() < 1) {
+                port = protocol.defaultPort();
+                getUrl().setPort(port);
+            }
+            ChannelFuture connect = bootstrap.connect(getUrl().getHost(), port).sync();
             channel = connect.channel();
             connect.addListener(new ChannelFutureListener() {
                 @Override

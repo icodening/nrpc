@@ -31,7 +31,7 @@ public interface Registry extends Node {
     /**
      * 订阅服务列表
      *
-     * @param url            需要取消的服务url
+     * @param url            需要订阅的服务url
      * @param notifyListener 服务列表改变后处理
      */
     void subscribe(URL url, NotifyListener notifyListener);

@@ -11,6 +11,14 @@ public interface MultiValueMap<K, V> extends Map<K, List<V>> {
 
     V getFirst(K key);
 
+    default V getFirst(K key, V defaultValue) {
+        V first = getFirst(key);
+        if (first == null) {
+            return defaultValue;
+        }
+        return first;
+    }
+
     void add(K key, V value);
 
     void addAll(K key, List<? extends V> values);

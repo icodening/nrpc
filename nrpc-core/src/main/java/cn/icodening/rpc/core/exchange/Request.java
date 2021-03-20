@@ -20,6 +20,10 @@ public interface Request extends ExchangeMessage {
 
     Object getAttribute(String name);
 
+    <T> T getAttribute(String name, Class<T> clazz);
+
+    <T> T getAttribute(String name,T defaultValue, Class<T> clazz);
+
     void removeAttribute(String name);
 
 }

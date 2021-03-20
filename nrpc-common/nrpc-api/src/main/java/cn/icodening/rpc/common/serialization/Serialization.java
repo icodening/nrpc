@@ -1,4 +1,4 @@
-package cn.icodening.rpc.transport.serialization;
+package cn.icodening.rpc.common.serialization;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

@@ -56,7 +56,33 @@ public class StandardRequest extends AbstractMessage implements Request {
     }
 
     @Override
+    public <T> T getAttribute(String name, Class<T> clazz) {
+        Object attribute = getAttribute(name);
+        return clazz.cast(attribute);
+    }
+
+    @Override
+    public <T> T getAttribute(String name, T defaultValue, Class<T> clazz) {
+        T attribute = getAttribute(name, clazz);
+        if (attribute == null) {
+            return defaultValue;
+        }
+        return attribute;
+    }
+
+    @Override
     public void removeAttribute(String name) {
         attributes.remove(name);
+    }
+
+    @Override
+    public String toString() {
+        return "StandardRequest{" +
+                "attributes=" + attributes +
+                ", parameters=" + parameters +
+                ", id=" + id +
+                ", headers=" + headers +
+                ", data=" + data +
+                '}';
     }
 }

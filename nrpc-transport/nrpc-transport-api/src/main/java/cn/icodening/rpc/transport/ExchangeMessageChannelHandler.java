@@ -1,16 +1,30 @@
 package cn.icodening.rpc.transport;
 
 import cn.icodening.rpc.core.exchange.ExchangeMessage;
+import cn.icodening.rpc.core.exchange.Request;
+import cn.icodening.rpc.core.exchange.StandardResponse;
+import cn.icodening.rpc.core.extension.Extension;
+import cn.icodening.rpc.core.extension.Scope;
+import cn.icodening.rpc.plugin.async.Async;
 
 /**
  * @author icodening
  * @date 2021.03.10
  */
+@Extension(scope = Scope.PROTOTYPE)
 public class ExchangeMessageChannelHandler implements NrpcChannelHandler {
 
     @Override
+    @Async
     public void received(NrpcChannel nrpcChannel, ExchangeMessage message) {
         //TODO LOGGER 收到消息
+        if (message instanceof Request) {
+            StandardResponse standardResponse = new StandardResponse();
+            standardResponse.setData("server response: " + message.getData());
+            nrpcChannel.call(standardResponse);
+        } else {
+            System.out.println(this.getClass().getName() + ": " + message.getData());
+        }
         //请求 or 响应
         //1.请求(此时相对的自身是服务提供者，内存中会有相应的提供者配置)
         //1.1 解析参数

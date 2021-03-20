@@ -62,4 +62,17 @@ public class StandardResponse extends AbstractMessage implements Response {
     public Object getResult() {
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "StandardResponse{" +
+                "requestId=" + requestId +
+                ", heartbeat=" + heartbeat +
+                ", code=" + code +
+                ", result=" + result +
+                ", id=" + id +
+                ", headers=" + headers +
+                ", data=" + data +
+                '}';
+    }
 }

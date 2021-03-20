@@ -2,7 +2,6 @@ package cn.icodening.rpc.transport;
 
 import cn.icodening.rpc.core.Node;
 import cn.icodening.rpc.core.boot.Boot;
-import cn.icodening.rpc.core.exchange.Response;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -31,5 +30,4 @@ public interface Server extends Boot, Node {
      */
     NrpcChannelHandler getNrpcChannelHandler();
 
-    void response(Response response);
 }

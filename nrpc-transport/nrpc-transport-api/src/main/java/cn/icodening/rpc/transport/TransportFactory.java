@@ -7,7 +7,7 @@ import cn.icodening.rpc.core.extension.Extensible;
  * @author icodening
  * @date 2021.03.10
  */
-@Extensible
+@Extensible("netty4")
 public interface TransportFactory {
 
     Client createClient(URL url, NrpcChannelHandler nrpcChannelHandler);
