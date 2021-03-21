@@ -56,6 +56,7 @@ public class StandardResponse extends AbstractMessage implements Response {
     @Override
     public void setResult(Object result) {
         this.result = result;
+        setData(result);
     }
 
     @Override

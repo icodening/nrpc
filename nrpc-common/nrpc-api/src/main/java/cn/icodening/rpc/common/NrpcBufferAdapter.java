@@ -7,6 +7,26 @@ package cn.icodening.rpc.common;
 public abstract class NrpcBufferAdapter implements NrpcBuffer {
 
     @Override
+    public void markReaderIndex() {
+
+    }
+
+    @Override
+    public void resetReaderIndex() {
+
+    }
+
+    @Override
+    public boolean isReadable() {
+        return false;
+    }
+
+    @Override
+    public boolean isWriteable() {
+        return false;
+    }
+
+    @Override
     public byte readByte() {
         return 0;
     }

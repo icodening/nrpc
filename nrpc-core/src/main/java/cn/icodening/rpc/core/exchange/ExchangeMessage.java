@@ -16,6 +16,8 @@ public interface ExchangeMessage {
 
     void setHeaders(NrpcHeaders nrpcHeaders);
 
+    void addHeader(String name, String value);
+
     List<String> getHeaders(String key);
 
     String getHeader(String key);

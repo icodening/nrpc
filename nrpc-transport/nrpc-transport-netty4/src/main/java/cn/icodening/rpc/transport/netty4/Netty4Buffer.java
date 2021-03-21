@@ -68,4 +68,24 @@ public class Netty4Buffer extends NrpcBufferAdapter {
     public int readerIndex() {
         return byteBuf.readerIndex();
     }
+
+    @Override
+    public void markReaderIndex() {
+        byteBuf.markReaderIndex();
+    }
+
+    @Override
+    public void resetReaderIndex() {
+        byteBuf.resetReaderIndex();
+    }
+
+    @Override
+    public boolean isReadable() {
+        return byteBuf.isReadable();
+    }
+
+    @Override
+    public boolean isWriteable() {
+        return byteBuf.isWritable();
+    }
 }

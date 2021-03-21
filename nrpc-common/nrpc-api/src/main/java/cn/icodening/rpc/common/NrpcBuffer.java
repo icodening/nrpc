@@ -6,6 +6,14 @@ package cn.icodening.rpc.common;
  */
 public interface NrpcBuffer {
 
+    void markReaderIndex();
+
+    void resetReaderIndex();
+
+    boolean isReadable();
+
+    boolean isWriteable();
+
     byte readByte();
 
     void readBytes(byte[] bytes);

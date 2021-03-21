@@ -33,24 +33,8 @@ public class FastJsonSerialization implements Serialization {
 
     @Override
     public ByteBuffer serialize(Object object) throws IOException {
-        ByteBuffer allocate = ByteBuffer.allocate(1024);
-        ByteBufferOutputStream outputStream = new ByteBufferOutputStream(allocate);
-        SerializeWriter serializeWriter = new SerializeWriter();
-        JSONSerializer jsonSerializer = new JSONSerializer(serializeWriter);
-
-        PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream));
-        jsonSerializer.write(object);
-        serializeWriter.writeTo(writer);
-        serializeWriter.flush();
-        serializeWriter.close();
-        writer.println();
-        writer.flush();
-        int limit = outputStream.buffer().flip().limit();
-        byte[] data = new byte[limit];
-        ByteBuffer wrap = ByteBuffer.wrap(data);
-        wrap.put(allocate);
-        wrap.position(0);
-        return wrap;
+        byte[] bytes = JSON.toJSONBytes(object);
+        return ByteBuffer.wrap(bytes);
     }
 
     @Override

@@ -14,6 +14,8 @@
         <module>nrpc-aop</module>
         <module>nrpc-plugin</module>
         <module>nrpc-config</module>
+        <module>nrpc-common</module>
+        <module>nrpc-common/nrpc-api</module>
     </modules>
 
     <name>nrpc-parent</name>

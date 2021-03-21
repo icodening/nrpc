@@ -42,6 +42,11 @@ public abstract class AbstractMessage implements ExchangeMessage {
     }
 
     @Override
+    public void addHeader(String name, String value) {
+        this.headers.add(name, value);
+    }
+
+    @Override
     public List<String> getHeaders(String key) {
         return headers.get(key);
     }

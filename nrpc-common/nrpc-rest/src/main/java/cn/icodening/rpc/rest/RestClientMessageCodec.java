@@ -8,7 +8,10 @@ import cn.icodening.rpc.core.exchange.Request;
 import cn.icodening.rpc.core.exchange.Response;
 import cn.icodening.rpc.core.exchange.StandardResponse;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
 import java.nio.ByteBuffer;
 
 /**
@@ -17,86 +20,95 @@ import java.nio.ByteBuffer;
  */
 public class RestClientMessageCodec implements ClientCodec {
 
+    private final byte[] rn = new byte[]{'\r', '\n'};
+
+    protected byte[] readTopLine(NrpcBuffer buffer) {
+        int newIndex = buffer.readerIndex();
+        buffer.markReaderIndex();
+        while (true) {
+            byte currentByte = buffer.readByte();
+            newIndex++;
+            if (currentByte == '\r' && buffer.readByte() == '\n') {
+                buffer.resetReaderIndex();
+                newIndex++;
+                break;
+            }
+        }
+        int oldIndex = buffer.readerIndex();
+        byte[] bytes = new byte[newIndex - oldIndex];
+        buffer.readBytes(bytes);
+        return bytes;
+    }
+
+    protected byte[] readHeaders(NrpcBuffer buffer) {
+        buffer.markReaderIndex();
+        int length = 0;
+        while (true) {
+            byte currentByte = buffer.readByte();
+            System.out.print((char) currentByte);
+            length++;
+            if (currentByte == '\r'
+                    && buffer.getByte(buffer.readerIndex() - 2) == '\n'
+                    && buffer.readByte() == '\n'
+            ) {
+                buffer.resetReaderIndex();
+                length++;
+                break;
+            }
+        }
+        byte[] bytes = new byte[length];
+        buffer.readBytes(bytes);
+        return bytes;
+    }
+
     @Override
     public Response decode(Serialization serialization, NrpcBuffer buffer) {
         Response response = new StandardResponse();
         //读第一行
-        int readableBytes = buffer.readableBytes();
-        byte[] bytes = new byte[readableBytes];
-        int index = 0;
-        while (true) {
-            byte b = buffer.getByte(index);
-            bytes[index++] = b;
-            if (b == '\n') {
-                break;
-            }
-        }
-        StringReader one = new StringReader(new String(bytes, 0, index));
-        BufferedReader oneBufferedReader = new BufferedReader(one);
-        //读header
-        while (true) {
-            byte b = buffer.getByte(index);
-            bytes[index++] = b;
-            if (b == '\n') {
-                //读完一行
-                byte b1 = buffer.getByte(index);
-                if (b1 == '\r') {
-                    //读完header
-                    break;
-                }
-            }
-        }
-        StringReader headerReader = new StringReader(new String(bytes, 0, index));
-        BufferedReader headerBufferReader = new BufferedReader(headerReader);
+        int i = buffer.readerIndex();
+        byte[] topLineBytes = readTopLine(buffer);
+        byte[] headerBytes = readHeaders(buffer);
         NrpcHeaders headers = new NrpcHeaders();
-        while (true) {
-            String header = null;
-            try {
-                header = headerBufferReader.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (header == null) {
-                break;
-            }
-            if ("".equals(header)) {
-                break;
-            }
-            if (!header.contains(":")) {
-                continue;
-            }
-            int splitIndex = header.indexOf(":");
-            String key = header.substring(0, splitIndex);
-            String value = header.substring(splitIndex + 2);
-            headers.set(key, value);
-        }
-        while (true) {
-            String[] split = new String[0];
-            try {
-                String line = oneBufferedReader.readLine();
+        StringReader stringReader = new StringReader(new String(headerBytes));
+        BufferedReader bufferedReader = new BufferedReader(stringReader);
+        try {
+            while (true) {
+                String line = bufferedReader.readLine();
                 if (line == null) {
                     break;
                 }
-                split = line.split(" ");
-                response.setCode(Integer.parseInt(split[1]));
-            } catch (IOException e) {
-                e.printStackTrace();
+                if ("".equals(line)) {
+                    continue;
+                }
+                int index = line.indexOf(":");
+                String name = line.substring(0, index);
+                String value = line.substring(index + 1);
+                String trim = value.trim();
+                headers.set(name, trim);
             }
+            response.setHeaders(headers);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        //判断contentLength是否满足需求
-        int contentLength = Integer.parseInt(headers.getFirst("content-length"));
-        if (contentLength > readableBytes - (index - 1)) {
+        if (response.getHeader(RestConstants.CONTENT_LENGTH) == null) {
+            return response;
+        }
+        int contentLength = Integer.parseInt(response.getHeader(RestConstants.CONTENT_LENGTH));
+        if (contentLength < 1) {
+            return response;
+        }
+        if (contentLength > buffer.readableBytes()) {
+            buffer.readerIndex(i);
             return null;
         }
-        //跳过header之后的换行符
-        buffer.readerIndex(index + 2);
-        byte[] data = new byte[contentLength];
-        buffer.readBytes(data);
-        response.setHeaders(headers);
-        ByteBuffer wrap = ByteBuffer.wrap(data);
+        byte[] dataBytes = new byte[contentLength];
+        buffer.readBytes(dataBytes);
+        ByteBuffer wrap = ByteBuffer.wrap(dataBytes);
+        Object data = null;
         try {
-            String deserialize = serialization.deserialize(wrap, String.class);
-            response.setData(deserialize);
+            data = serialization.deserialize(wrap, Object.class);
+            response.setResult(data);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -106,34 +118,44 @@ public class RestClientMessageCodec implements ClientCodec {
     @Override
     public void encode(Serialization serialization, Request request, NrpcBuffer nrpcBuffer) {
         //写入第一行
-        String method = request.getAttribute("method", "POST", String.class);
+        String method = request.getAttribute("method", RestConstants.POST, String.class);
         String uri = request.getAttribute("uri", "/", String.class);
-        String protocol = request.getAttribute("protocol", "HTTP/1.1", String.class);
+        String protocol = request.getAttribute("protocol", RestConstants.PROTOCOL, String.class);
         String one = method + " " + uri + " " + protocol;
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        PrintWriter printWriter = new PrintWriter(byteArrayOutputStream);
-        printWriter.println(one);
-        NrpcHeaders headers = request.getHeaders();
-        headers.forEach((key, values) -> {
-            StringBuilder sb = new StringBuilder(key);
-            sb.append(":");
-            for (String value : values) {
-                sb.append(value).append(",");
-            }
-            printWriter.print(sb.substring(0, sb.length() - 1));
-        });
-        printWriter.println();
-        Object data = request.getData();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
-            ByteBuffer serialize = serialization.serialize(data);
-            int length = serialize.limit();
-            headers.set("Content-Length", String.valueOf(length));
-            byte[] bytes = new byte[length];
-            serialize.get(bytes);
-            printWriter.println(bytes);
+            bos.write(one.getBytes());
+            bos.write(rn);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        nrpcBuffer.writeBytes(byteArrayOutputStream.toByteArray());
+        NrpcHeaders headers = request.getHeaders();
+        Object data = request.getData();
+        try {
+            ByteBuffer dataBuffer = serialization.serialize(data);
+            int length = dataBuffer.limit();
+            headers.set(RestConstants.CONTENT_LENGTH, String.valueOf(length));
+            headers.set(RestConstants.CONTENT_TYPE, RestConstants.CONTENT_TYPE_APPLICATION_JSON);
+            headers.forEach((key, values) -> {
+                StringBuilder sb = new StringBuilder(key);
+                sb.append(":").append(" ");
+                for (String value : values) {
+                    sb.append(value).append(",");
+                }
+                try {
+                    bos.write(sb.substring(0, sb.length() - 1).getBytes());
+                    bos.write(rn);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            bos.write(rn);
+            byte[] bytes = new byte[length];
+            dataBuffer.get(bytes);
+            bos.write(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        nrpcBuffer.writeBytes(bos.toByteArray());
     }
 }

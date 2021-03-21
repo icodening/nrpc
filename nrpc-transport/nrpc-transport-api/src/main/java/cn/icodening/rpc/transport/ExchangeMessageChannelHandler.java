@@ -18,6 +18,7 @@ public class ExchangeMessageChannelHandler implements NrpcChannelHandler {
     @Async
     public void received(NrpcChannel nrpcChannel, ExchangeMessage message) {
         //TODO LOGGER 收到消息
+//        System.out.println("receive: " + message);
         if (message instanceof Request) {
             StandardResponse standardResponse = new StandardResponse();
             standardResponse.setData("server response: " + message.getData());

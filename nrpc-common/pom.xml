@@ -3,28 +3,24 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>nrpc-transport</artifactId>
+        <artifactId>nrpc</artifactId>
         <groupId>cn.icodening</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>nrpc-transport-netty4</artifactId>
+    <artifactId>nrpc-common</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>nrpc-lightning</module>
+        <module>nrpc-rest</module>
+    </modules>
 
     <dependencies>
         <dependency>
             <groupId>cn.icodening</groupId>
-            <artifactId>nrpc-transport-api</artifactId>
+            <artifactId>nrpc-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!-- netty -->
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>${netty.version}</version>
-        </dependency>
-        <!-- netty -->
     </dependencies>
-
 </project>

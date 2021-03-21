@@ -62,7 +62,7 @@ public class Netty4Client extends AbstractClient {
     @Override
     protected void doStart() {
         try {
-            int port = 0;
+            int port = getUrl().getPort() == null ? 0 : getUrl().getPort();
             if (getUrl().getPort() == null || getUrl().getPort() < 1) {
                 port = protocol.defaultPort();
                 getUrl().setPort(port);
@@ -94,7 +94,7 @@ public class Netty4Client extends AbstractClient {
                     LOGGER.info("发送成功");
                     return;
                 }
-                LOGGER.info("发送失败");
+                LOGGER.info("发送失败",future.cause());
             }
         });
     }

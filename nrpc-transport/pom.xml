@@ -13,7 +13,31 @@
     <packaging>pom</packaging>
     <modules>
         <module>nrpc-transport-api</module>
+        <module>nrpc-transport-netty4</module>
     </modules>
+    <dependencies>
+        <!-- plugin -->
+        <dependency>
+            <groupId>cn.icodening</groupId>
+            <artifactId>nrpc-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- plugin -->
 
+        <!-- protocol test scope -->
+        <dependency>
+            <groupId>cn.icodening</groupId>
+            <artifactId>nrpc-lightning</artifactId>
+            <version>${project.version}</version>
+<!--            <scope>test</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>cn.icodening</groupId>
+            <artifactId>nrpc-rest</artifactId>
+            <version>${project.version}</version>
+<!--            <scope>test</scope>-->
+        </dependency>
+        <!-- protocol -->
+    </dependencies>
 
 </project>

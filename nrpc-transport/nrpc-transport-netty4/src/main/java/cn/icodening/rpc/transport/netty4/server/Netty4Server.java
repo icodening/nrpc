@@ -59,7 +59,7 @@ public class Netty4Server extends AbstractServer {
     @Override
     protected void doStart() {
         try {
-            int port = 0;
+            int port = getUrl().getPort() == null ? 0 : getUrl().getPort();
             if (getUrl().getPort() == null || getUrl().getPort() < 1) {
                 port = protocol.defaultPort();
                 getUrl().setPort(port);
