@@ -1,5 +1,6 @@
 package cn.icodening.rpc.transport;
 
+import cn.icodening.rpc.common.codec.ServerCodec;
 import cn.icodening.rpc.core.Node;
 import cn.icodening.rpc.core.boot.Boot;
 
@@ -29,5 +30,7 @@ public interface Server extends Boot, Node {
      * @return ChannelHandler
      */
     NrpcChannelHandler getNrpcChannelHandler();
+
+    ServerCodec getServerCodec();
 
 }

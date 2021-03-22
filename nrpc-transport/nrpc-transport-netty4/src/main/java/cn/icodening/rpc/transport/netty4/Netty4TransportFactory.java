@@ -1,6 +1,8 @@
 package cn.icodening.rpc.transport.netty4;
 
+import cn.icodening.rpc.common.Protocol;
 import cn.icodening.rpc.core.URL;
+import cn.icodening.rpc.core.extension.ExtensionLoader;
 import cn.icodening.rpc.transport.Client;
 import cn.icodening.rpc.transport.NrpcChannelHandler;
 import cn.icodening.rpc.transport.Server;
@@ -15,11 +17,13 @@ import cn.icodening.rpc.transport.netty4.server.Netty4Server;
 public class Netty4TransportFactory implements TransportFactory {
     @Override
     public Client createClient(URL url, NrpcChannelHandler nrpcChannelHandler) {
-        return new Netty4Client(url, nrpcChannelHandler);
+        Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(url.getProtocol());
+        return new Netty4Client(url, protocol.getClientCodec(), nrpcChannelHandler);
     }
 
     @Override
     public Server createServer(URL url, NrpcChannelHandler nrpcChannelHandler) {
-        return new Netty4Server(url, nrpcChannelHandler);
+        Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(url.getProtocol());
+        return new Netty4Server(url, protocol.getServerCodec(), nrpcChannelHandler);
     }
 }

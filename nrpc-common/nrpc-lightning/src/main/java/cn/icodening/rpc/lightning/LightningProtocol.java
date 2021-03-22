@@ -11,10 +11,16 @@ import cn.icodening.rpc.common.codec.ServerCodec;
 public class LightningProtocol implements Protocol {
 
     public static final int DEFAULT_PORT = 12580;
+    public static final String PROTOCOL_NAME = "lightning";
 
     @Override
     public int defaultPort() {
         return DEFAULT_PORT;
+    }
+
+    @Override
+    public String getProtocolName() {
+        return PROTOCOL_NAME;
     }
 
     @Override

@@ -1,8 +1,7 @@
 package cn.icodening.rpc.transport.netty4.server;
 
-import cn.icodening.rpc.common.Protocol;
+import cn.icodening.rpc.common.codec.ServerCodec;
 import cn.icodening.rpc.core.URL;
-import cn.icodening.rpc.core.extension.ExtensionLoader;
 import cn.icodening.rpc.transport.AbstractServer;
 import cn.icodening.rpc.transport.NrpcChannelHandler;
 import io.netty.bootstrap.ServerBootstrap;
@@ -25,18 +24,12 @@ public class Netty4Server extends AbstractServer {
 
     private ServerBootstrap bootstrap;
 
-    private ChannelFuture future;
-
-    private Protocol protocol;
-
-    public Netty4Server(URL url, NrpcChannelHandler nrpcChannelHandler) {
-        super(url, nrpcChannelHandler);
+    public Netty4Server(URL url, ServerCodec serverCodec, NrpcChannelHandler nrpcChannelHandler) {
+        super(url, serverCodec, nrpcChannelHandler);
     }
 
     @Override
     protected void doInitialize() {
-        String protocolName = getUrl().getProtocol();
-        this.protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(protocolName);
         bootstrap = new ServerBootstrap();
         bossGroup = new NioEventLoopGroup(1);
         workerGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() + 1);
@@ -47,10 +40,10 @@ public class Netty4Server extends AbstractServer {
                 .option(ChannelOption.TCP_NODELAY, true)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
-                    protected void initChannel(SocketChannel ch) throws Exception {
+                    protected void initChannel(SocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
-                        pipeline.addLast(new Netty4ServerDecoder(protocol.getServerCodec()));
-                        pipeline.addLast(new Netty4ServerEncoder(protocol.getServerCodec()));
+                        pipeline.addLast(new Netty4ServerDecoder(getServerCodec()));
+                        pipeline.addLast(new Netty4ServerEncoder(getServerCodec()));
                         pipeline.addLast(channelHandler);
                     }
                 });
@@ -59,13 +52,8 @@ public class Netty4Server extends AbstractServer {
     @Override
     protected void doStart() {
         try {
-            int port = getUrl().getPort() == null ? 0 : getUrl().getPort();
-            if (getUrl().getPort() == null || getUrl().getPort() < 1) {
-                port = protocol.defaultPort();
-                getUrl().setPort(port);
-            }
-            future = bootstrap.bind(port).sync();
-            LOGGER.info("启动成功, 端口号: " + port);
+            ChannelFuture future = bootstrap.bind(getUrl().getPort()).sync();
+            LOGGER.info("启动成功, 端口号: " + getUrl().getPort());
             future.channel().closeFuture();
         } catch (InterruptedException e) {
             e.printStackTrace();

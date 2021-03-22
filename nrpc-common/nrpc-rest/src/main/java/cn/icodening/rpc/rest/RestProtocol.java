@@ -10,9 +10,16 @@ import cn.icodening.rpc.common.codec.ServerCodec;
  */
 public class RestProtocol implements Protocol {
 
+    public static final String PROTOCOL_NAME = "rest";
+
     @Override
     public int defaultPort() {
         return 80;
+    }
+
+    @Override
+    public String getProtocolName() {
+        return PROTOCOL_NAME;
     }
 
     @Override

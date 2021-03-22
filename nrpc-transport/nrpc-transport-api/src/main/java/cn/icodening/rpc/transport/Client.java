@@ -1,5 +1,6 @@
 package cn.icodening.rpc.transport;
 
+import cn.icodening.rpc.common.codec.ClientCodec;
 import cn.icodening.rpc.core.Node;
 import cn.icodening.rpc.core.boot.Boot;
 import cn.icodening.rpc.core.exchange.Request;
@@ -20,5 +21,7 @@ public interface Client extends Boot, Node {
     NrpcChannelHandler getNrpcChannelHandler();
 
     void request(Request request);
+
+    ClientCodec getClientCodec();
 
 }

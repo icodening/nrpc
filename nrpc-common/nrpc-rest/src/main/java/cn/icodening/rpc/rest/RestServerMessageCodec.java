@@ -45,8 +45,8 @@ public class RestServerMessageCodec implements ServerCodec {
             int contentLength = dataBuffer.limit();
             byte[] dataBytes = new byte[contentLength];
             dataBuffer.get(dataBytes);
-            headers.set("Content-Length", String.valueOf(contentLength));
-            headers.set("Content-Type", "application/json");
+            headers.set(RestConstants.CONTENT_LENGTH, String.valueOf(contentLength));
+            headers.set(RestConstants.CONTENT_TYPE, RestConstants.CONTENT_TYPE_APPLICATION_JSON);
 
             response.getHeaders().forEach((key, values) -> {
                 StringBuilder valuesBuilder = new StringBuilder(key).append(":").append(" ");
@@ -91,7 +91,6 @@ public class RestServerMessageCodec implements ServerCodec {
         int length = 0;
         while (true) {
             byte currentByte = buffer.readByte();
-            System.out.print((char) currentByte);
             length++;
             if (currentByte == '\r'
                     && buffer.getByte(buffer.readerIndex() - 2) == '\n'
@@ -165,99 +164,6 @@ public class RestServerMessageCodec implements ServerCodec {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        int readableBytes = buffer.readableBytes();
-//        byte[] bytes = new byte[readableBytes];
-//        int index = 0;
-//        while (true) {
-//            byte b = buffer.getByte(index);
-////            bytes[index] = b;
-//            if (b == '\r' && buffer.getByte(index + 1) == '\n') {
-//                int temp = index + 1;
-//                index++;
-////                bytes[index] = buffer.getByte(temp);
-//                break;
-//            }
-//            index++;
-//        }
-//        buffer.readBytes(topLineBytes);
-//        int oneIndex = index + 1;
-//        String topLine = new String(topLineBytes, 0, index + 1);
-//        StringReader one = new StringReader(topLine);
-//        BufferedReader oneBufferedReader = new BufferedReader(one);
-//        //读header
-//        while (true) {
-//            byte b = buffer.getByte(index);
-//            bytes[index] = b;
-//            if (b == '\r' && buffer.getByte(index + 1) == '\n'
-//                    && buffer.getByte(index - 1) == '\n') {
-//                int temp = index + 1;
-//                ++index;
-//                bytes[index] = buffer.getByte(temp);
-//                break;
-//            }
-//            index++;
-//        }
-//        StringReader headerReader = new StringReader(new String(bytes, oneIndex, index - oneIndex + 1));
-//        BufferedReader headerBufferReader = new BufferedReader(headerReader);
-//        NrpcHeaders headers = new NrpcHeaders();
-//        while (true) {
-//            String header = null;
-//            try {
-//                header = headerBufferReader.readLine();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            if (header == null) {
-//                break;
-//            }
-//            if ("".equals(header)) {
-//                break;
-//            }
-//            if (!header.contains(":")) {
-//                continue;
-//            }
-//            int splitIndex = header.indexOf(":");
-//            String key = header.substring(0, splitIndex);
-//            String value = header.substring(splitIndex + 2);
-//            headers.set(key, value);
-//        }
-//        while (true) {
-//            String[] split = new String[0];
-//            try {
-//                String line = oneBufferedReader.readLine();
-//                if (line == null) {
-//                    break;
-//                }
-//                split = line.split(" ");
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            request.setAttribute("method", split[0]);
-//            request.setAttribute("uri", split[1]);
-//            request.setAttribute("protocol", split[2]);
-//        }
-//        //判断contentLength是否满足需求
-//        String contentLengthString = headers.getFirst("content-length");
-//        if (contentLengthString == null || Integer.parseInt(contentLengthString) < 0) {
-//            return new StandardRequest();
-//        }
-//        int contentLength = Integer.parseInt(contentLengthString);
-//        buffer.readerIndex(buffer.readerIndex() + index);
-//        if (contentLength > buffer.readableBytes()) {
-//            return null;
-//        }
-//        //跳过header之后的换行符
-//        buffer.readerIndex(buffer.readerIndex() + 1);
-//        byte[] data = new byte[contentLength];
-//        buffer.readBytes(data);
-//        request.setHeaders(headers);
-//        ByteBuffer wrap = ByteBuffer.wrap(data);
-//        try {
-//            Object deserialize = serialization.deserialize(wrap, Object.class);
-//            request.setData(deserialize);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         return request;
     }
 }

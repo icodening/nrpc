@@ -18,6 +18,8 @@ public interface Protocol {
      */
     int defaultPort();
 
+    String getProtocolName();
+
     ClientCodec getClientCodec();
 
     ServerCodec getServerCodec();
