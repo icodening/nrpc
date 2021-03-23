@@ -33,7 +33,7 @@ public class Netty4Buffer extends NrpcBufferAdapter {
 
     @Override
     public void get(byte[] bytes) {
-        byteBuf.getBytes(0, bytes);
+        byteBuf.getBytes(byteBuf.readerIndex(), bytes);
     }
 
     @Override

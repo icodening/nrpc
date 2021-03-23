@@ -109,18 +109,23 @@ public class RestServerMessageCodec implements ServerCodec {
     @Override
     public Request decode(Serialization serialization, NrpcBuffer buffer) {
         Request request = new StandardRequest();
+        NrpcHeaders headers = new NrpcHeaders();
         int i = buffer.readerIndex();
         //读第一行
         if (!buffer.isReadable()) {
             return null;
         }
         byte[] topLineBytes = readTopLine(buffer);
+        String topLine = new String(topLineBytes);
+        String[] s = topLine.split(" ");
+        headers.set("method", s[0]);
+        headers.set("uri", s[1]);
+        headers.set("protocol", s[2]);
         if (!buffer.isReadable()) {
             return null;
         }
         byte[] headersBytes = readHeaders(buffer);
         String header = new String(headersBytes);
-        NrpcHeaders headers = new NrpcHeaders();
         StringReader stringReader = new StringReader(header);
         BufferedReader bufferedReader = new BufferedReader(stringReader);
         try {
@@ -139,7 +144,9 @@ public class RestServerMessageCodec implements ServerCodec {
                 headers.set(name, trim);
             }
             request.setHeaders(headers);
-
+            if (headers.getFirst("request-id") != null) {
+                request.setId(Long.parseLong(headers.getFirst("request-id")));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

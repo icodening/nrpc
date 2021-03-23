@@ -130,6 +130,7 @@ public class RestClientMessageCodec implements ClientCodec {
             e.printStackTrace();
         }
         NrpcHeaders headers = request.getHeaders();
+        headers.set("request-id", String.valueOf(request.getId()));
         Object data = request.getData();
         try {
             ByteBuffer dataBuffer = serialization.serialize(data);

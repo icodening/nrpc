@@ -33,6 +33,9 @@ public class FastJsonSerialization implements Serialization {
 
     @Override
     public ByteBuffer serialize(Object object) throws IOException {
+        if (object == null) {
+            return ByteBuffer.wrap(new byte[0]);
+        }
         byte[] bytes = JSON.toJSONBytes(object);
         return ByteBuffer.wrap(bytes);
     }

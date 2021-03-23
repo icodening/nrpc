@@ -15,7 +15,7 @@ import java.nio.ByteBuffer;
  * @author icodening
  * @date 2021.03.20
  */
-public abstract class AbstractLightningMessageCodec<I extends ExchangeMessage,O extends ExchangeMessage> implements Codec<I,O> {
+public abstract class AbstractLightningMessageCodec<I extends ExchangeMessage, O extends ExchangeMessage> implements Codec<I, O> {
 
     protected final static int DATA_LENGTH = 4;
 
@@ -49,6 +49,9 @@ public abstract class AbstractLightningMessageCodec<I extends ExchangeMessage,O 
                 ByteBuffer wrap = ByteBuffer.wrap(dataBytes);
                 result = serialization.deserialize(wrap, clazz);
                 wrap = null;
+            } else {
+                ByteBuffer wrap = ByteBuffer.wrap(new byte[0]);
+                result = serialization.deserialize(wrap, clazz);
             }
             return result;
         } catch (IOException e) {
