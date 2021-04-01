@@ -224,7 +224,7 @@ public class ReflectUtil {
 
     public static Class<?>[] getAllInterfaces(Class<?> clazz) {
         Class<?> temp = clazz;
-        List<Class<?>> interfaces = new ArrayList<>();
+        Set<Class<?>> interfaces = new HashSet<>();
         while (!Object.class.equals(temp)) {
             interfaces.addAll(Arrays.asList(temp.getInterfaces()));
             temp = temp.getSuperclass();
