@@ -187,7 +187,7 @@ public class ExtensionLoader<T> {
             result = getExtension(annotation.value());
         }
         if (null == result) {
-            LOGGER.error(MessageManager.get("default.extension.not.exist", type));
+            LOGGER.warn(MessageManager.get("default.extension.not.exist", type));
         }
         return result;
     }
