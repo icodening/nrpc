@@ -1,8 +1,8 @@
 package cn.icodening.rpc.transport;
 
-import cn.icodening.rpc.common.codec.ClientCodec;
 import cn.icodening.rpc.core.URL;
 import cn.icodening.rpc.core.boot.AbstractBootAdapter;
+import cn.icodening.rpc.core.codec.ClientCodec;
 
 /**
  * @author icodening
@@ -15,6 +15,8 @@ public abstract class AbstractClient extends AbstractBootAdapter implements Clie
     private final URL url;
 
     private final ClientCodec clientCodec;
+
+    protected boolean available = true;
 
     protected AbstractClient(URL url, ClientCodec clientCodec, NrpcChannelHandler nrpcChannelHandler) {
         this.url = url;
@@ -35,5 +37,10 @@ public abstract class AbstractClient extends AbstractBootAdapter implements Clie
     @Override
     public ClientCodec getClientCodec() {
         return this.clientCodec;
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return available;
     }
 }

@@ -1,8 +1,8 @@
 package cn.icodening.rpc.transport.netty4.client;
 
-import cn.icodening.rpc.common.codec.ClientCodec;
-import cn.icodening.rpc.common.serialization.FastJsonSerialization;
+import cn.icodening.rpc.core.codec.ClientCodec;
 import cn.icodening.rpc.core.exchange.Request;
+import cn.icodening.rpc.core.serialization.FastJsonSerialization;
 import cn.icodening.rpc.transport.netty4.Netty4Buffer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

@@ -1,8 +1,9 @@
 package cn.icodening.rpc.transport.netty4.client;
 
-import cn.icodening.rpc.common.codec.ClientCodec;
 import cn.icodening.rpc.core.URL;
+import cn.icodening.rpc.core.codec.ClientCodec;
 import cn.icodening.rpc.core.exchange.Request;
+import cn.icodening.rpc.core.util.MessageManager;
 import cn.icodening.rpc.transport.AbstractClient;
 import cn.icodening.rpc.transport.NrpcChannelHandler;
 import io.netty.bootstrap.Bootstrap;
@@ -45,9 +46,9 @@ public class Netty4Client extends AbstractClient {
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.TCP_NODELAY, true)
                     .remoteAddress(getUrl().getHost(), getUrl().getPort());
-            LOGGER.info("netty client is init");
+            LOGGER.info(MessageManager.get("netty4.client.init.success"));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.info(MessageManager.get("netty4.client.init.failure"), e);
         }
     }
 
@@ -74,7 +75,6 @@ public class Netty4Client extends AbstractClient {
         pipeline.addLast(new Netty4ClientDecoder(getClientCodec()));
         pipeline.addLast(new Netty4ClientEncoder(getClientCodec()));
         pipeline.addLast(nettyClientHandler);
-        LOGGER.info("建立连接成功, 目标: " + ch.localAddress());
     }
 
     protected ChannelPool initChannelPool(ChannelPoolHandler channelPoolHandler) {
@@ -86,25 +86,32 @@ public class Netty4Client extends AbstractClient {
     @Override
     @SuppressWarnings("unchecked")
     public void request(Request request) {
+        //FIXME 移除写死的中文提示
         channelPool.acquire()
                 .addListeners((FutureListener<Channel>) future -> {
-                    Channel ch = future.get();
-                    try {
-                        ch.writeAndFlush(request).addListener((ChannelFutureListener) sendFuture -> {
-                            if (sendFuture.isSuccess()) {
-                                LOGGER.info("发送成功");
-                                return;
-                            }
-                            LOGGER.info("发送失败", sendFuture.cause());
-                        });
-                    } finally {
-                        channelPool.release(ch);
+                    if (future.isSuccess()) {
+                        Channel ch = future.get();
+                        try {
+                            ch.writeAndFlush(request).addListener((ChannelFutureListener) sendFuture -> {
+                                if (sendFuture.isSuccess()) {
+                                    LOGGER.info("发送成功");
+                                    return;
+                                }
+                                LOGGER.info("发送失败", sendFuture.cause());
+                            });
+                        } finally {
+                            channelPool.release(ch);
+                        }
+                    } else {
+                        LOGGER.info("服务不可用");
                     }
                 });
     }
 
     @Override
     protected void doDestroy() {
+        //FIXME graceful shutdown
+        this.available = false;
         this.group.shutdownGracefully();
         this.channelPool.close();
     }

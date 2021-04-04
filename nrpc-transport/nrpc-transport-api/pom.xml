@@ -18,10 +18,19 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>cn.icodening</groupId>
-            <artifactId>nrpc-api</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>cn.icodening</groupId>-->
+<!--            <artifactId>nrpc-api</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>cn.icodening</groupId>-->
+<!--            <artifactId>nrpc-invoker</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
     </dependencies>
 
 </project>

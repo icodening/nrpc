@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 public class ExceptionGlobalHandlerAdvisor implements Advisor {
 
     private static final boolean GLOBAL_EXCEPTION_HANDLER =
-            Boolean.parseBoolean(System.getProperty("nrpc.exception.handler.global", "true"));
+            Boolean.parseBoolean(System.getProperty("nrpc.exception.handler.global", "false"));
 
     private final Advice nrpcExceptionHandler = new NrpcExceptionGlobalHandler();
 

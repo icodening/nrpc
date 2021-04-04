@@ -1,8 +1,11 @@
 package cn.icodening.rpc.common;
 
-import cn.icodening.rpc.common.codec.ClientCodec;
-import cn.icodening.rpc.common.codec.ServerCodec;
+import cn.icodening.rpc.core.URL;
+import cn.icodening.rpc.core.codec.ClientCodec;
+import cn.icodening.rpc.core.codec.ServerCodec;
 import cn.icodening.rpc.core.extension.Extensible;
+import cn.icodening.rpc.transport.Client;
+import cn.icodening.rpc.transport.Server;
 
 /**
  * @author icodening
@@ -23,4 +26,9 @@ public interface Protocol {
     ClientCodec getClientCodec();
 
     ServerCodec getServerCodec();
+
+    Client refer(URL url);
+
+    Server export(URL url);
+
 }

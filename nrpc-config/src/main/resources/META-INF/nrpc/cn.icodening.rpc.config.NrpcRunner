@@ -1,0 +1,4 @@
+env=cn.icodening.rpc.config.runner.EnvironmentConfigurationRunner
+reference=cn.icodening.rpc.config.runner.ReferenceConfigRunner
+service=cn.icodening.rpc.config.runner.ServiceExportRunner
+serviceRegistration=cn.icodening.rpc.config.runner.ServiceRegistrationRunner

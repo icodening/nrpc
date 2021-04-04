@@ -144,6 +144,7 @@ public class NacosRegistry extends AbstractRegistry {
                 .addParameter(RegistryKeyConstant.WEIGHT, Double.toString(weight))
                 .addParameter(RegistryKeyConstant.EPHEMERAL, Boolean.toString(ephemeral));
         instanceUrl.setMetaData(metadata);
+        instanceUrl.setProtocol(metadata.get("protocol"));
         return instanceUrl;
     }
 

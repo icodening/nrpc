@@ -16,6 +16,8 @@
         <module>nrpc-config</module>
         <module>nrpc-common</module>
         <module>nrpc-common/nrpc-api</module>
+        <module>nrpc-example</module>
+        <module>nrpc-invoker</module>
     </modules>
 
     <name>nrpc-parent</name>

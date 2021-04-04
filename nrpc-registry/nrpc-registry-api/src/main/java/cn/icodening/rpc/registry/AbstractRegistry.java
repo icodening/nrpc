@@ -17,6 +17,9 @@ public abstract class AbstractRegistry implements Registry {
 
     private final Set<URL> registered = new ConcurrentHashSet<>();
 
+    protected boolean available = true;
+
+
     protected AbstractRegistry(URL url) {
         this.url = url;
     }
@@ -60,5 +63,8 @@ public abstract class AbstractRegistry implements Registry {
         return this.url;
     }
 
-
+    @Override
+    public boolean isAvailable() {
+        return available;
+    }
 }

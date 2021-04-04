@@ -1,0 +1,1 @@
+clientRequestInterceptorAdvisor=cn.icodening.nrpc.invoker.advisor.ClientRequestInterceptorAdvisor

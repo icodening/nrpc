@@ -26,6 +26,9 @@ public class NettyChannel implements NrpcChannel {
 
     private Channel channel;
 
+    private boolean available = true;
+
+
     public NettyChannel(URL url, Channel channel) {
         this.url = url;
         this.channel = channel;
@@ -54,14 +57,11 @@ public class NettyChannel implements NrpcChannel {
     @Override
     public void call(ExchangeMessage exchangeMessage) {
         ChannelFuture channelFuture = channel.writeAndFlush(exchangeMessage);
-        channelFuture.addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture future) throws Exception {
-                if (future.isSuccess()) {
-                    //TODO 发送成功日志
-                }
-                //TODO 发送失败日志
+        channelFuture.addListener((ChannelFutureListener) future -> {
+            if (future.isSuccess()) {
+                //TODO 发送成功日志
             }
+            //TODO 发送失败日志
         });
     }
 
@@ -83,5 +83,10 @@ public class NettyChannel implements NrpcChannel {
     @Override
     public URL getUrl() {
         return this.url;
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return available;
     }
 }

@@ -201,24 +201,40 @@ public class URL implements Serializable {
         return retURL;
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) {
+//            return true;
+//        }
+//        if (o == null || getClass() != o.getClass()) {
+//            return false;
+//        }
+//        URL url = (URL) o;
+//        return Objects.equals(protocol, url.protocol) &&
+//                Objects.equals(host, url.host) &&
+//                Objects.equals(port, url.port);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(protocol, host, port);
+//    }
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        URL url = (URL) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        URL url = (URL) object;
         return Objects.equals(protocol, url.protocol) &&
                 Objects.equals(host, url.host) &&
                 Objects.equals(port, url.port) &&
-                Objects.equals(parameters, url.parameters);
+                Objects.equals(parameters, url.parameters) &&
+                Objects.equals(metaData, url.metaData);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(protocol, host, port, parameters);
+        return Objects.hash(protocol, host, port, parameters, metaData);
     }
 
     @Override

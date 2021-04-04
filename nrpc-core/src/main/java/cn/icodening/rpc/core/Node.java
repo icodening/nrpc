@@ -15,4 +15,7 @@ public interface Node {
      * @return 当前节点自身的URL
      */
     URL getUrl();
+
+    boolean isAvailable();
+
 }

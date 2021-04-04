@@ -1,8 +1,8 @@
 package cn.icodening.rpc.transport;
 
-import cn.icodening.rpc.common.codec.ServerCodec;
 import cn.icodening.rpc.core.URL;
 import cn.icodening.rpc.core.boot.AbstractBootAdapter;
+import cn.icodening.rpc.core.codec.ServerCodec;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -17,6 +17,8 @@ public abstract class AbstractServer extends AbstractBootAdapter implements Serv
     private final URL url;
 
     private final ServerCodec serverCodec;
+
+    protected boolean available = false;
 
     protected AbstractServer(URL url, ServerCodec serverCodec, NrpcChannelHandler nrpcChannelHandler) {
         this.nrpcChannelHandler = nrpcChannelHandler;
@@ -48,5 +50,10 @@ public abstract class AbstractServer extends AbstractBootAdapter implements Serv
     @Override
     public ServerCodec getServerCodec() {
         return this.serverCodec;
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return available;
     }
 }

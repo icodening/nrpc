@@ -1,7 +1,7 @@
 package cn.icodening.rpc.transport.netty4;
 
-import cn.icodening.rpc.common.NrpcBuffer;
-import cn.icodening.rpc.common.NrpcBufferAdapter;
+import cn.icodening.rpc.core.util.NrpcBuffer;
+import cn.icodening.rpc.core.util.NrpcBufferAdapter;
 import io.netty.buffer.ByteBuf;
 
 /**

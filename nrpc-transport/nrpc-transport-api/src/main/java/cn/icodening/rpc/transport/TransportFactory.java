@@ -1,6 +1,8 @@
 package cn.icodening.rpc.transport;
 
 import cn.icodening.rpc.core.URL;
+import cn.icodening.rpc.core.codec.ClientCodec;
+import cn.icodening.rpc.core.codec.ServerCodec;
 import cn.icodening.rpc.core.extension.Extensible;
 
 /**
@@ -10,7 +12,7 @@ import cn.icodening.rpc.core.extension.Extensible;
 @Extensible("netty4")
 public interface TransportFactory {
 
-    Client createClient(URL url, NrpcChannelHandler nrpcChannelHandler);
+    Client createClient(URL url, ClientCodec clientCodec, NrpcChannelHandler nrpcChannelHandler);
 
-    Server createServer(URL url, NrpcChannelHandler nrpcChannelHandler);
+    Server createServer(URL url, ServerCodec serverCodec, NrpcChannelHandler nrpcChannelHandler);
 }

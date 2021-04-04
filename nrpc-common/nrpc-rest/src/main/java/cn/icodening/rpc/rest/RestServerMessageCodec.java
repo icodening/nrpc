@@ -1,12 +1,12 @@
 package cn.icodening.rpc.rest;
 
-import cn.icodening.rpc.common.NrpcBuffer;
-import cn.icodening.rpc.common.codec.ServerCodec;
-import cn.icodening.rpc.common.serialization.Serialization;
+import cn.icodening.rpc.core.codec.ServerCodec;
 import cn.icodening.rpc.core.exchange.NrpcHeaders;
 import cn.icodening.rpc.core.exchange.Request;
 import cn.icodening.rpc.core.exchange.Response;
 import cn.icodening.rpc.core.exchange.StandardRequest;
+import cn.icodening.rpc.core.serialization.Serialization;
+import cn.icodening.rpc.core.util.NrpcBuffer;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

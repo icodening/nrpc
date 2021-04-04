@@ -1,0 +1,2 @@
+failfast=cn.icodening.nrpc.invoker.cluster.FailFastClusterFactory
+failover=cn.icodening.nrpc.invoker.cluster.FailoverClusterFactory

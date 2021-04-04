@@ -1,0 +1,4 @@
+service=cn.icodening.rpc.config.cache.ServiceLocalCache
+server=cn.icodening.rpc.config.cache.ServerLocalCache
+reference=cn.icodening.rpc.config.cache.ReferenceLocalCache
+providerUrl=cn.icodening.rpc.config.cache.ProviderUrlCache
