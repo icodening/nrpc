@@ -31,7 +31,14 @@ public class MessageManager {
 
     private final Map<String, String> messageMap = new ConcurrentHashMap<>();
 
-    private MessageManager() {
+    private final String language;
+
+    static {
+        getInstance(DEFAULT_LANGUAGE);
+    }
+
+    private MessageManager(String language) {
+        this.language = language;
     }
 
     private static String getResourcesName(String language) {
@@ -60,7 +67,7 @@ public class MessageManager {
             synchronized (language) {
                 messageManager = I18N_UTILS.get(language);
                 if (messageManager == null) {
-                    I18N_UTILS.putIfAbsent(language, new MessageManager());
+                    I18N_UTILS.putIfAbsent(language, new MessageManager(language));
                     messageManager = I18N_UTILS.get(language);
                     try {
                         Enumeration<URL> resources =
@@ -79,6 +86,13 @@ public class MessageManager {
                         }
                     } catch (IOException e) {
                         LOGGER.error(e);
+                    } finally {
+                        if (!DEFAULT_LANGUAGE.equals(messageManager.language)
+                                && messageManager.messageMap.isEmpty()) {
+                            messageManager = null;
+                            I18N_UTILS.remove(language);
+                            I18N_UTILS.putIfAbsent(language, I18N_UTILS.get(DEFAULT_LANGUAGE));
+                        }
                     }
                 }
             }
