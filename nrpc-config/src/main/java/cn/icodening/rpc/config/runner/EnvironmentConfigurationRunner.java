@@ -6,7 +6,6 @@ import cn.icodening.rpc.config.RegistryConfig;
 import cn.icodening.rpc.core.boot.AbstractBootAdapter;
 import cn.icodening.rpc.core.util.NetUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
@@ -53,10 +52,6 @@ public class EnvironmentConfigurationRunner extends AbstractBootAdapter implemen
         System.setProperty("local.ip", localHostIp);
         System.setProperty("local.pid", findPid());
         //TODO 其他配置初始化
-        File cache = new File("cache");
-        if (!cache.exists()) {
-            cache.mkdir();
-        }
     }
 
     private String findPid() {
