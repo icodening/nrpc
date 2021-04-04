@@ -44,7 +44,9 @@ public class ApplicationConfigurationRunner extends AbstractBootAdapter implemen
                 protocolConfig.setPort(protocol.defaultPort());
                 protocolConfigs.add(protocolConfig);
             }
+            applicationConfig.setProtocolConfigs(protocolConfigs);
         }
+        bootstrap.application(applicationConfig);
     }
 
     @Override

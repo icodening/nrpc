@@ -38,6 +38,7 @@ import java.util.concurrent.ConcurrentMap;
  * 加载本地文件首先判断该缓存文件的状态，是正常关闭服务还是异常停机
  * 异常停机：合并服务
  * 正常停机：全量替换
+ * FIXME 此处代码又臭又长待优化
  *
  * @author icodening
  * @date 2021.03.14
