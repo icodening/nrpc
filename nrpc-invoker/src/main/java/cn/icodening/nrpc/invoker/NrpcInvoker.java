@@ -53,6 +53,7 @@ public class NrpcInvoker implements InvocationHandler {
         request.setData(argsList);
         cluster.invoke(request);
         ResponseFuture responseFuture = futureCache.get(request.getId());
+        futureCache.remove(request.getId());
         if (responseFuture == null) {
             return null;
         }
@@ -61,7 +62,6 @@ public class NrpcInvoker implements InvocationHandler {
         if (response == null) {
             return null;
         }
-
         Object result = response.getResult();
         if (result instanceof JSONObject) {
             return JSON.parseObject(((JSONObject) result).toJSONString(), method.getReturnType());
