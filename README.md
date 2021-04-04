@@ -27,8 +27,10 @@ nrpc插件模块，该模块主要用于动态增强Service Provider的功能。
 4. 打印方法耗时功能
 ### nrpc-registry
 nrpc的注册服务模块，主要用于服务的注册、反注册、订阅、反订阅等功能
+### nrpc-spring
+nrpc对接Spring的模块，可在Spring下方便使用nrpc
 ### nrpc-transport
-nrpc的传输模块，也是RPC的核心。该模块用于实现服务与服务之间的网络通讯
+nrpc的传输模块，也是RPC的核心。该模块用于实现服务与服务之间的网络通讯i
 
 ### 后续还会有其他模块加入......
 
