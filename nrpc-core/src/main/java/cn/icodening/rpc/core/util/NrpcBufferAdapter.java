@@ -1,4 +1,4 @@
-package cn.icodening.rpc.common;
+package cn.icodening.rpc.core.util;
 
 /**
  * @author icodening
