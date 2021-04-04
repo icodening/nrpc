@@ -9,8 +9,6 @@ import cn.icodening.rpc.core.boot.AbstractBootAdapter;
 import cn.icodening.rpc.core.extension.ExtensionLoader;
 import cn.icodening.rpc.transport.Server;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +19,8 @@ import java.util.Map;
  * @date 2021.03.14
  */
 public class ServiceExportRunner extends AbstractBootAdapter implements NrpcRunner {
+
+    private static final String DEFAULT_LOCAL_SERVICE_CACHE_KEY = "service";
 
     @Override
     @SuppressWarnings("unchecked")
@@ -33,15 +33,7 @@ public class ServiceExportRunner extends AbstractBootAdapter implements NrpcRunn
         String localIp = System.getProperty("local.ip");
         ApplicationConfig applicationConfig = NrpcBootstrap.getInstance().getApplicationConfig();
         List<ProtocolConfig> protocolConfigs = applicationConfig.getProtocolConfigs();
-        if (protocolConfigs == null || protocolConfigs.isEmpty()) {
-            ProtocolConfig protocolConfig = new ProtocolConfig();
-            Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension();
-            protocolConfig.setPort(protocol.defaultPort());
-            protocolConfig.setName(protocol.getProtocolName());
-            protocolConfigs = new ArrayList<>(Collections.singleton(protocolConfig));
-        }
-        LocalCache<String, Server> serverPointCache = ExtensionLoader.getExtensionLoader(LocalCache.class).getExtension("server");
-        //FIXME 暂时按照应用级别的协议配置优先
+        //FIXME 暂时按照应用级别的协议配置优先，当存在对应协议的依赖时，会用所有协议暴露服务
         for (ProtocolConfig config : protocolConfigs) {
             String protocolName = config.getName();
             Map<String, String> params = config.getParameters();
@@ -53,7 +45,8 @@ public class ServiceExportRunner extends AbstractBootAdapter implements NrpcRunn
             export.start();
         }
 
-        LocalCache<String, NrpcService> serviceConfigCache = ExtensionLoader.getExtensionLoader(LocalCache.class).getExtension("service");
+        //缓存本地服务
+        LocalCache<String, NrpcService> serviceConfigCache = ExtensionLoader.getExtensionLoader(LocalCache.class).getExtension(DEFAULT_LOCAL_SERVICE_CACHE_KEY);
         for (ServiceConfig serviceConfig : serviceConfigs) {
             if (serviceConfig.getProtocolConfigs() == null || serviceConfig.getProtocolConfigs().isEmpty()) {
                 serviceConfig.setProtocolConfigs(protocolConfigs);
@@ -63,8 +56,6 @@ public class ServiceExportRunner extends AbstractBootAdapter implements NrpcRunn
             nrpcService.setName(serviceConfig.getName());
             nrpcService.setRef(serviceConfig.getReference());
             nrpcService.setVersion(serviceConfig.getVersion());
-            //FIXME protocolMap -> protocol: serviceMap
-            //FIXME serviceMap -> serviceName: serviceConfig
             serviceConfigCache.set(serviceConfig.getName(), nrpcService);
         }
     }

@@ -84,6 +84,9 @@ public abstract class AbstractProtocol implements Protocol {
         Server server = serverMap.get(serverType);
         if (server == null) {
             synchronized (serverType.intern()) {
+                if (url.getPort() == null || url.getPort() == 0) {
+                    url.setPort(defaultPort());
+                }
                 server = serverMap.get(serverType);
                 if (server == null) {
                     server = createServer(url);

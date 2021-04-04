@@ -51,7 +51,7 @@ public class EnvironmentConfigurationRunner extends AbstractBootAdapter implemen
         }
 
         System.setProperty("local.ip", localHostIp);
-//        System.setProperty("nrpc.provider.port", "12580");
+        System.setProperty("local.pid", findPid());
         //TODO 其他配置初始化
         File cache = new File("cache");
         if (!cache.exists()) {

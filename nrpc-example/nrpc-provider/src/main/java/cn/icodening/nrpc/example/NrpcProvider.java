@@ -16,12 +16,10 @@ public class NrpcProvider {
         ServiceConfig serviceConfig1 = new ServiceConfig();
         serviceConfig1.setServiceInterface(IHelloService.class);
         serviceConfig1.setReference(new HelloService());
-        serviceConfig1.setName(IHelloService.class.getName());
 
         ServiceConfig serviceConfig2 = new ServiceConfig();
         serviceConfig2.setServiceInterface(IEchoService.class);
         serviceConfig2.setReference(new EchoService());
-        serviceConfig2.setName(IEchoService.class.getName());
 
         ApplicationConfig applicationConfig = new ApplicationConfig("nrpc-provider");
         ArrayList<ProtocolConfig> protocolConfigs = new ArrayList<>();

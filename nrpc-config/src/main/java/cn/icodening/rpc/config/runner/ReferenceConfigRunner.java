@@ -204,7 +204,7 @@ public class ReferenceConfigRunner extends AbstractBootAdapter implements NrpcRu
             }
             return JSON.parseObject(inputStream, JSONObject.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("load cache fail !", e);
         }
         return null;
     }

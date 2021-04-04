@@ -64,10 +64,10 @@ public class ServiceRegistrationRunner extends AbstractBootAdapter implements Nr
                 final URL unregisterUrl = serviceUrl;
                 NrpcShutdownHook.getInstance().addShutdownCallable(() -> {
                     registry.unregister(unregisterUrl);
-                    LOGGER.info("已下线:" + serviceConfig.getName());
+                    LOGGER.info("down:" + serviceConfig.getName());
                 });
                 //FIXME I18N
-                LOGGER.info(serviceConfig.getName() + " 注册成功");
+                LOGGER.info(serviceConfig.getName() + " register success");
             }
         }
     }

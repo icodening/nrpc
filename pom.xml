@@ -18,6 +18,7 @@
         <module>nrpc-common/nrpc-api</module>
         <module>nrpc-example</module>
         <module>nrpc-invoker</module>
+        <module>nrpc-spring</module>
     </modules>
 
     <name>nrpc-parent</name>
@@ -32,6 +33,7 @@
         <junit4.version>4.13.1</junit4.version>
         <aopalliance.version>1.0</aopalliance.version>
         <cglib.version>3.3.0</cglib.version>
+        <spring.framework.version>5.2.8.RELEASE</spring.framework.version>
     </properties>
 
     <dependencyManagement>
@@ -97,6 +99,13 @@
                 <version>${cglib.version}</version>
             </dependency>
             <!-- cglib -->
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.framework.version}</version>
+                <optional>true</optional>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

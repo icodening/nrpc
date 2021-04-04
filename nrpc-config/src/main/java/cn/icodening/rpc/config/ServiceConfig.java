@@ -43,6 +43,9 @@ public class ServiceConfig extends AbstractConfig {
 
     public void setServiceInterface(Class<?> serviceInterface) {
         this.serviceInterface = serviceInterface;
+        if (serviceInterface != null) {
+            setName(serviceInterface.getName());
+        }
     }
 
     public MultiValueMap<String, String> getParameters() {
