@@ -1,9 +1,6 @@
 package cn.icodening.rpc.spring;
 
-import cn.icodening.rpc.config.ApplicationConfig;
-import cn.icodening.rpc.config.NrpcBootstrap;
-import cn.icodening.rpc.config.RegistryConfig;
-import cn.icodening.rpc.config.ServiceConfig;
+import cn.icodening.rpc.config.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -25,16 +22,24 @@ public class NrpcBootstrapEventListener implements ApplicationListener<ContextRe
     public void onApplicationEvent(ContextRefreshedEvent event) {
         ApplicationContext applicationContext = event.getApplicationContext();
         NrpcBootstrap bootstrap = NrpcBootstrap.getInstance();
-        Map<String, ServiceConfig> serviceBeanMap = applicationContext.getBeansOfType(ServiceConfig.class);
-        Map<String, RegistryConfig> registryConfigMap = applicationContext.getBeansOfType(RegistryConfig.class);
         Map<String, ApplicationConfig> applicationConfigMap = applicationContext.getBeansOfType(ApplicationConfig.class);
-        List<RegistryConfig> registryConfigs = new ArrayList<>(registryConfigMap.values());
-        List<ServiceConfig> serviceConfigs = new ArrayList<>(serviceBeanMap.values());
+        Map<String, RegistryConfig> registryConfigMap = applicationContext.getBeansOfType(RegistryConfig.class);
+        Map<String, ReferenceConfig> referenceConfigMap = applicationContext.getBeansOfType(ReferenceConfig.class);
+        Map<String, ServiceConfig> serviceBeanMap = applicationContext.getBeansOfType(ServiceConfig.class);
+
         List<ApplicationConfig> applicationConfigs = new ArrayList<>(applicationConfigMap.values());
+        List<RegistryConfig> registryConfigs = new ArrayList<>(registryConfigMap.values());
+        List<ReferenceConfig> referenceConfigs = new ArrayList<>(referenceConfigMap.values());
+        List<ServiceConfig> serviceConfigs = new ArrayList<>(serviceBeanMap.values());
+
         if (!applicationConfigs.isEmpty()) {
             bootstrap.application(applicationConfigs.get(0));
         }
-        bootstrap.services(serviceConfigs)
+        for (ReferenceConfig referenceConfig : referenceConfigs) {
+            referenceConfig.setRegistryConfigList(registryConfigs);
+        }
+        bootstrap.references(referenceConfigs)
+                .services(serviceConfigs)
                 .registries(registryConfigs)
                 .start();
     }

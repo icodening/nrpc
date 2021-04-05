@@ -32,21 +32,21 @@ import static org.springframework.core.annotation.AnnotatedElementUtils.findMerg
  * @author icodening
  * @date 2021.04.04
  */
-public class NrpcServicePostProcessor implements BeanDefinitionRegistryPostProcessor {
+public class NrpcServiceAnnotationPostProcessor implements BeanDefinitionRegistryPostProcessor {
 
     private final Set<String> packagesToScan;
 
     private final BeanNameGenerator beanNameGenerator = new AnnotationBeanNameGenerator();
 
-    public NrpcServicePostProcessor(String... packagesToScan) {
+    public NrpcServiceAnnotationPostProcessor(String... packagesToScan) {
         this(asList(packagesToScan));
     }
 
-    public NrpcServicePostProcessor(Collection<String> packagesToScan) {
+    public NrpcServiceAnnotationPostProcessor(Collection<String> packagesToScan) {
         this(new LinkedHashSet<>(packagesToScan));
     }
 
-    public NrpcServicePostProcessor(Set<String> packagesToScan) {
+    public NrpcServiceAnnotationPostProcessor(Set<String> packagesToScan) {
         this.packagesToScan = packagesToScan;
     }
 
