@@ -7,7 +7,9 @@ import cn.icodening.rpc.core.LocalCache;
 import cn.icodening.rpc.core.URL;
 import cn.icodening.rpc.core.boot.AbstractBootAdapter;
 import cn.icodening.rpc.core.extension.ExtensionLoader;
+import cn.icodening.rpc.core.util.MessageManager;
 import cn.icodening.rpc.transport.Server;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -22,12 +24,15 @@ public class ServiceExportRunner extends AbstractBootAdapter implements NrpcRunn
 
     private static final String DEFAULT_LOCAL_SERVICE_CACHE_KEY = "service";
 
+    private static final Logger LOGGER = Logger.getLogger(ServiceExportRunner.class);
+
     @Override
     @SuppressWarnings("unchecked")
     protected void doStart() {
         NrpcBootstrap instance = NrpcBootstrap.getInstance();
         List<ServiceConfig> serviceConfigs = instance.getServiceConfigs();
         if (serviceConfigs.isEmpty()) {
+            LOGGER.info(MessageManager.get("no.service"));
             return;
         }
         String localIp = System.getProperty("local.ip");

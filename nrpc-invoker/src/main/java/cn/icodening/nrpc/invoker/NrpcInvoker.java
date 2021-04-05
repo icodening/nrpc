@@ -53,18 +53,22 @@ public class NrpcInvoker implements InvocationHandler {
         request.setData(argsList);
         cluster.invoke(request);
         ResponseFuture responseFuture = futureCache.get(request.getId());
-        futureCache.remove(request.getId());
         if (responseFuture == null) {
             return null;
         }
-        //FIXME 当服务器突然断开后，此处会被阻塞直到超时
-        Response response = responseFuture.get(5, TimeUnit.SECONDS);
-        if (response == null) {
-            return null;
-        }
-        Object result = response.getResult();
-        if (result instanceof JSONObject) {
-            return JSON.parseObject(((JSONObject) result).toJSONString(), method.getReturnType());
+        Object result;
+        try {
+            //FIXME 当服务器突然断开后，此处会被阻塞直到超时
+            Response response = responseFuture.get(5, TimeUnit.SECONDS);
+            if (response == null) {
+                return null;
+            }
+            result = response.getResult();
+            if (result instanceof JSONObject) {
+                return JSON.parseObject(((JSONObject) result).toJSONString(), method.getReturnType());
+            }
+        } finally {
+            futureCache.remove(request.getId());
         }
         return result;
     }

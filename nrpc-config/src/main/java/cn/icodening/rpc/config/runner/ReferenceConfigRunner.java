@@ -11,19 +11,14 @@ import cn.icodening.rpc.core.LocalCache;
 import cn.icodening.rpc.core.URL;
 import cn.icodening.rpc.core.boot.AbstractBootAdapter;
 import cn.icodening.rpc.core.extension.ExtensionLoader;
-import cn.icodening.rpc.core.util.FileUtil;
+import cn.icodening.rpc.core.util.MessageManager;
 import cn.icodening.rpc.registry.NotifyListener;
 import cn.icodening.rpc.registry.Registry;
 import cn.icodening.rpc.registry.RegistryFactory;
-import cn.icodening.rpc.registry.RegistryKeyConstant;
 import cn.icodening.rpc.transport.Client;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -47,49 +42,12 @@ public class ReferenceConfigRunner extends AbstractBootAdapter implements NrpcRu
 
     private static final Logger LOGGER = Logger.getLogger(ReferenceConfigRunner.class);
 
-    private static final String REFERENCE_FILE_NAME = "cache/reference_cache.nrpc";
-
-    private static final String REFERENCE_FILE_STATUS_OPEN = "OPEN";
-    private static final String REFERENCE_FILE_STATUS_CLOSE = "CLOSE";
-
     @Override
     @SuppressWarnings("unchecked")
     protected void doStart() {
-        //读取缓存
-        JSONObject cache = loadCache();
-        if (cache != null) {
-            String status = cache.getString("status");
-            if (REFERENCE_FILE_STATUS_OPEN.equals(status)) {
-                //说明是非正常停机，读取消费者配置，后续订阅读到的消费者
-                String cacheString = cache.getString("references");
-                List<ReferenceConfig> referenceConfigs = JSON.parseArray(cacheString, ReferenceConfig.class);
-                List<RegistryConfig> registryConfigs = NrpcBootstrap.getInstance().getRegistryConfigs();
-                if (referenceConfigs != null && !referenceConfigs.isEmpty()) {
-                    for (ReferenceConfig referenceConfig : referenceConfigs) {
-                        for (RegistryConfig registryConfig : registryConfigs) {
-                            URL registryConfigUrl = registryConfig.getUrl();
-                            RegistryFactory factory = ExtensionLoader.getExtensionLoader(RegistryFactory.class).getExtension(registryConfigUrl.getProtocol());
-                            Registry registry = factory.getRegistry(registryConfigUrl);
-                            URL url = new URL();
-                            url.addParameter(RegistryKeyConstant.SERVICE, referenceConfig.getServiceName());
-                            registry.subscribe(url, new NotifyListener() {
-                                @Override
-                                public void onNotify(List<URL> urls) {
-                                    System.out.println("ReferenceConfigRunner notify");
-                                    for (URL url1 : urls) {
-                                        System.out.println(url1);
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }
-            }
-        }
-        //合并配置信息
-        //TODO
         List<ReferenceConfig> referenceConfigs = NrpcBootstrap.getInstance().getReferenceConfigs();
         if (referenceConfigs == null || referenceConfigs.isEmpty()) {
+            LOGGER.info(MessageManager.get("no.reference"));
             return;
         }
         for (ReferenceConfig referenceConfig : referenceConfigs) {
@@ -121,7 +79,7 @@ public class ReferenceConfigRunner extends AbstractBootAdapter implements NrpcRu
                         Method setClient = ClientDelegateInvoker.class.getMethod("setClient", Client.class);
                         setClient.invoke(AopUtil.getProxyTarget(client), refer);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.warn(e);
                     }
                     refer.initialize();
                     refer.start();
@@ -181,7 +139,7 @@ public class ReferenceConfigRunner extends AbstractBootAdapter implements NrpcRu
                                         Method setClient = ClientDelegateInvoker.class.getMethod("setClient", Client.class);
                                         setClient.invoke(AopUtil.getProxyTarget(client), refer);
                                     } catch (Exception e) {
-                                        e.printStackTrace();
+                                        LOGGER.warn(e);
                                     }
                                     refer.initialize();
                                     refer.start();
@@ -195,19 +153,6 @@ public class ReferenceConfigRunner extends AbstractBootAdapter implements NrpcRu
                 });
             }
         }
-    }
-
-    private JSONObject loadCache() {
-        InputStream inputStream = FileUtil.getInputStream(new File(REFERENCE_FILE_NAME));
-        try {
-            if (inputStream == null) {
-                return null;
-            }
-            return JSON.parseObject(inputStream, JSONObject.class);
-        } catch (IOException e) {
-            LOGGER.warn("load cache fail !", e);
-        }
-        return null;
     }
 
     @Override
