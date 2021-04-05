@@ -13,6 +13,9 @@ public class AbstractLocalCache<K, V> implements LocalCache<K, V> {
 
     @Override
     public V get(K name) {
+        if (name == null) {
+            return null;
+        }
         return dataMap.get(name);
     }
 

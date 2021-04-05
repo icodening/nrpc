@@ -118,9 +118,9 @@ public class RestServerMessageCodec implements ServerCodec {
         byte[] topLineBytes = readTopLine(buffer);
         String topLine = new String(topLineBytes);
         String[] s = topLine.split(" ");
-        headers.set("method", s[0]);
-        headers.set("uri", s[1]);
-        headers.set("protocol", s[2]);
+        headers.set("method", s[0].trim());
+        headers.set("uri", s[1].trim());
+        headers.set("protocol", s[2].trim());
         if (!buffer.isReadable()) {
             return null;
         }

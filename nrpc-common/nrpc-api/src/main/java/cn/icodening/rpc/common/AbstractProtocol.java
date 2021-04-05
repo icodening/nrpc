@@ -2,10 +2,12 @@ package cn.icodening.rpc.common;
 
 import cn.icodening.rpc.common.model.NrpcService;
 import cn.icodening.rpc.core.LocalCache;
+import cn.icodening.rpc.core.NrpcException;
 import cn.icodening.rpc.core.URL;
 import cn.icodening.rpc.core.exchange.Response;
 import cn.icodening.rpc.core.exchange.StandardResponse;
 import cn.icodening.rpc.core.extension.ExtensionLoader;
+import cn.icodening.rpc.core.util.MessageManager;
 import cn.icodening.rpc.core.util.ResponseFuture;
 import cn.icodening.rpc.transport.Client;
 import cn.icodening.rpc.transport.NrpcChannelHandler;
@@ -51,6 +53,9 @@ public abstract class AbstractProtocol implements Protocol {
         LocalCache<String, NrpcService> service = ExtensionLoader.getExtensionLoader(LocalCache.class).getExtension("service");
         NrpcService nrpcService = service.get(targetClazzName);
         try {
+            if (nrpcService == null) {
+                throw new NrpcException(MessageManager.get("no.available.service"));
+            }
             Method method = nrpcService.getServiceInterface().getMethod(methodName, classes.toArray(new Class[0]));
             Object invoke = method.invoke(nrpcService.getRef(), objs.toArray());
             StandardResponse standardResponse = new StandardResponse();

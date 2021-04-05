@@ -22,11 +22,6 @@
             <artifactId>nrpc-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>cn.icodening</groupId>-->
-        <!--            <artifactId>nrpc-transport-api</artifactId>-->
-        <!--            <version>${project.version}</version>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>cn.icodening</groupId>
             <artifactId>nrpc-transport-netty4</artifactId>
