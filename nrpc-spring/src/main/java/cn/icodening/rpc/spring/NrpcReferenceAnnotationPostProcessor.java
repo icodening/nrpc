@@ -55,7 +55,6 @@ public class NrpcReferenceAnnotationPostProcessor extends InstantiationAwareBean
 
     private static final Logger LOGGER = Logger.getLogger(NrpcReferenceAnnotationPostProcessor.class);
 
-
     private final Map<String, InjectionMetadata> injectionMetadataCache = new ConcurrentHashMap<>(256);
 
     private final Set<Class<? extends Annotation>> nrpcReferenceTypes = new LinkedHashSet<>(4);

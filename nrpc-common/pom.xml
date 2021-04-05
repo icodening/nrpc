@@ -12,6 +12,7 @@
     <artifactId>nrpc-common</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>nrpc-api</module>
         <module>nrpc-lightning</module>
         <module>nrpc-rest</module>
     </modules>
