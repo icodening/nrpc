@@ -57,7 +57,7 @@ public class Netty4Client extends AbstractClient {
         try {
             channelPool = initChannelPool();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(MessageManager.get("init.channel.pool.fail"), e);
         }
     }
 
@@ -86,7 +86,6 @@ public class Netty4Client extends AbstractClient {
     @Override
     @SuppressWarnings("unchecked")
     public void request(Request request) {
-        //FIXME 移除写死的中文提示
         channelPool.acquire()
                 .addListeners((FutureListener<Channel>) future -> {
                     if (future.isSuccess()) {
@@ -94,16 +93,16 @@ public class Netty4Client extends AbstractClient {
                         try {
                             ch.writeAndFlush(request).addListener((ChannelFutureListener) sendFuture -> {
                                 if (sendFuture.isSuccess()) {
-                                    LOGGER.info("发送成功");
+                                    LOGGER.debug(MessageManager.get("request.send.success", request.getId()));
                                     return;
                                 }
-                                LOGGER.info("发送失败", sendFuture.cause());
+                                LOGGER.warn(MessageManager.get("request.send.fail", request.getId()));
                             });
                         } finally {
                             channelPool.release(ch);
                         }
                     } else {
-                        LOGGER.info("服务不可用");
+                        LOGGER.warn(MessageManager.get("failed.to.get.connection"), future.cause());
                     }
                 });
     }
