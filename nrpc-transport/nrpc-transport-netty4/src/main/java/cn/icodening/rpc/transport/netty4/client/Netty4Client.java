@@ -84,10 +84,9 @@ public class Netty4Client extends AbstractClient {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void request(Request request) {
         channelPool.acquire()
-                .addListeners((FutureListener<Channel>) future -> {
+                .addListener((FutureListener<Channel>) future -> {
                     if (future.isSuccess()) {
                         Channel ch = future.get();
                         try {
